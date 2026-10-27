@@ -1,0 +1,78 @@
+/* Shared building blocks for inner pages (axial grid). */
+
+.section {
+  position: relative;
+  padding-block: clamp(56px, 8vw, 112px);
+}
+
+.surface {
+  background: var(--surface);
+}
+
+/* Editorial row: image on one side of the axis, copy on the other; alternate rows mirror. */
+.split {
+  align-items: center;
+  row-gap: 28px;
+}
+
+.splitMedia {
+  grid-column: 1 / span 6;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.splitMedia img {
+  object-fit: cover;
+}
+
+.splitCopy {
+  grid-column: 8 / span 5;
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+
+.split[data-flip] .splitMedia {
+  grid-column: 7 / span 6;
+  grid-row: 1;
+}
+
+.split[data-flip] .splitCopy {
+  grid-column: 1 / span 5;
+  grid-row: 1;
+}
+
+.splitCopy h2,
+.splitCopy h3 {
+  font-size: var(--step-3);
+}
+
+.splitCopy p {
+  color: var(--muted);
+}
+
+.prose {
+  max-width: 64ch;
+  margin-inline: auto;
+  display: grid;
+  gap: 18px;
+  color: var(--muted);
+  font-size: var(--step-1);
+}
+
+.prose strong {
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .splitMedia,
+  .split[data-flip] .splitMedia,
+  .splitCopy,
+  .split[data-flip] .splitCopy {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+}

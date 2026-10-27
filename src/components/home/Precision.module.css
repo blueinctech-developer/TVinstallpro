@@ -1,0 +1,224 @@
+.precision {
+  --p: 0;
+  /* panel expansion: 0 → 1 over the first 25% of the section */
+  --e: min(1, calc(var(--p) * 4));
+  position: relative;
+  height: 260vh;
+  background: var(--bg);
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  /* the inset shrinks to zero as the panel expands to full bleed */
+  padding: calc((1 - var(--e)) * clamp(16px, 4vw, 56px));
+  padding-top: calc(var(--header-h) * (1 - var(--e)) + (1 - var(--e)) * 16px);
+}
+
+.panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: calc((1 - var(--e)) * var(--radius-panel));
+  background: radial-gradient(120% 90% at 50% 50%, var(--deep) 0%, var(--abyss) 70%);
+  color: #fff;
+  isolation: isolate;
+}
+
+.tunnel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* The axis, made of light. */
+.beam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  translate: -1px 0;
+  background: linear-gradient(180deg, rgba(94, 176, 250, 0) 0%, var(--sky) 40%, #fff 50%, var(--sky) 60%, rgba(94, 176, 250, 0) 100%);
+  box-shadow: 0 0 24px 6px rgba(10, 124, 234, 0.45);
+}
+
+.horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(94, 176, 250, 0.5) 30%, rgba(255, 255, 255, 0.8) 50%, rgba(94, 176, 250, 0.5) 70%, transparent);
+}
+
+.beats {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.beat {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.word {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  padding-left: 0.32em; /* balance the trailing letter-spacing so the word centres on the axis */
+  font-size: clamp(2rem, 1rem + 6vw, 6.5rem);
+  font-weight: 600;
+  color: #fff;
+  /* dark halo first, so passing light streaks never wash out the letters; then the blue glow */
+  text-shadow: 0 0 2px rgba(3, 10, 22, 0.9), 0 0 24px rgba(3, 10, 22, 0.95), 0 0 48px rgba(10, 124, 234, 0.5);
+  white-space: nowrap;
+  opacity: 0;
+  filter: blur(14px);
+  letter-spacing: 0.6em;
+  transition: opacity 0.7s var(--ease-out), filter 0.7s var(--ease-out), letter-spacing 1s var(--ease-out);
+}
+
+.text {
+  position: absolute;
+  right: var(--margin);
+  bottom: clamp(32px, 7vh, 72px);
+  max-width: 34ch;
+  color: var(--mist);
+  font-size: var(--step-1);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+
+.beat[data-active] .word {
+  opacity: 1;
+  filter: blur(0);
+  letter-spacing: 0.32em;
+}
+
+.beat[data-active] .text {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.15s;
+}
+
+.counter {
+  position: absolute;
+  z-index: 1;
+  left: var(--margin);
+  bottom: clamp(32px, 7vh, 72px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--mist);
+}
+
+.track {
+  position: relative;
+  width: 80px;
+  height: 1px;
+  background: var(--dark-line);
+}
+
+.track span {
+  position: absolute;
+  inset: 0;
+  background: var(--sky);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease-out);
+}
+
+@media (max-width: 760px) {
+  .precision {
+    height: 240vh;
+  }
+  .text {
+    left: var(--margin);
+    right: var(--margin);
+    bottom: 96px;
+    text-align: center;
+    margin-inline: auto;
+  }
+  .counter {
+    left: 50%;
+    translate: -50% 0;
+    bottom: 56px;
+  }
+}
+
+/* Reduced motion: a calm, static list on the dark panel. */
+@media (prefers-reduced-motion: reduce) {
+  .precision {
+    height: auto;
+  }
+  .sticky {
+    position: relative;
+    height: auto;
+    padding: 0;
+  }
+  .panel {
+    border-radius: 0;
+    padding: var(--space-9) var(--margin);
+  }
+  .beats {
+    position: relative;
+    display: grid;
+    gap: 40px;
+    justify-items: center;
+    text-align: center;
+  }
+  .beat {
+    position: relative;
+  }
+  .word,
+  .text {
+    position: relative;
+    inset: auto;
+    translate: none;
+    opacity: 1;
+    filter: none;
+    transform: none;
+    letter-spacing: 0.32em;
+    margin: 0 auto;
+  }
+  .text {
+    margin-top: 12px;
+  }
+  .counter {
+    display: none;
+  }
+}
+
+/* Readability backing (light streaks pass behind text):
+   a dark ellipse behind the central word, and a dark fade behind the bottom captions. */
+.beats::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(90%, 900px);
+  height: 34%;
+  translate: -50% -50%;
+  background: radial-gradient(closest-side, rgba(3, 10, 22, 0.78), rgba(3, 10, 22, 0) 100%);
+  pointer-events: none;
+}
+
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 38%;
+  background: linear-gradient(0deg, rgba(3, 10, 22, 0.94) 0%, rgba(3, 10, 22, 0.7) 45%, rgba(3, 10, 22, 0) 100%);
+  pointer-events: none;
+}

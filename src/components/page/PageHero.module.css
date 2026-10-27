@@ -1,0 +1,191 @@
+.hero {
+  position: relative;
+  padding: calc(var(--header-h) + clamp(48px, 9vh, 120px)) 0 clamp(56px, 8vw, 104px);
+  background: radial-gradient(90% 70% at 50% 0%, #fff 30%, var(--surface) 100%);
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 70%;
+  width: min(70vw, 820px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(94, 176, 250, 0.2), transparent 70%);
+  pointer-events: none;
+}
+
+.axis {
+  top: auto;
+  height: clamp(56px, 8vw, 104px);
+  bottom: 0;
+  background: linear-gradient(180deg, transparent, var(--brand));
+}
+
+.inner {
+  position: relative;
+}
+
+.text {
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+  text-align: center;
+}
+
+.crumbs {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.crumbs li + li::before {
+  content: "/";
+  margin-right: 10px;
+  color: var(--line-strong);
+}
+
+.crumbs a:hover {
+  color: var(--ink);
+}
+
+.crumbs [aria-current] {
+  color: var(--ink);
+}
+
+.title {
+  max-width: 13ch;
+  font-size: min(var(--step-5), 14vh);
+}
+
+.lead {
+  max-width: 52ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Task pages: the headline steps down one level and the form starts higher. */
+.compact {
+  padding: calc(var(--header-h) + clamp(32px, 6vh, 72px)) 0 clamp(40px, 5vw, 64px);
+}
+
+.compact .title {
+  font-size: clamp(2.5rem, 1.4rem + 4.2vw, 5rem);
+  max-width: 16ch;
+}
+
+/* ---------- Split: words left of the axis, a photo right of it ---------- */
+.split .inner {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gap);
+  row-gap: 40px;
+  align-items: center;
+}
+
+.split .text {
+  grid-column: 1 / span 6;
+  justify-items: start;
+  text-align: left;
+}
+
+.split .title {
+  max-width: 11ch;
+  /* sized to its half of the grid: "Installation," must clear the axis */
+  font-size: min(clamp(2.5rem, 1.2rem + 4.4vw, 5.25rem), 13vh);
+}
+
+.split .actions {
+  justify-content: flex-start;
+}
+
+.media {
+  grid-column: 7 / span 6;
+  position: relative;
+  aspect-ratio: 5 / 4;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--deep);
+  box-shadow: var(--shadow-float);
+}
+
+.media img {
+  object-fit: cover;
+}
+
+/* The photo is uncovered by a brand panel wiping toward the axis. */
+.wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-strong);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+@media (max-width: 900px) {
+  .split .text,
+  .media {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- Dark: the page opens on the abyss tone ---------- */
+.dark {
+  background: radial-gradient(90% 120% at 50% 100%, #0a3e78 0%, var(--deep) 40%, var(--abyss) 80%);
+  color: var(--mist);
+}
+
+.dark::before {
+  background: radial-gradient(closest-side, rgba(10, 124, 234, 0.28), transparent 70%);
+}
+
+.dark .title {
+  color: #fff;
+}
+
+.dark .title :global(.ghost) {
+  color: #9db0ca; /* ≥4.8:1 across the gradient (AAA, large text) */
+}
+
+.dark .lead {
+  color: #d3dce8;
+}
+
+.dark .crumbs {
+  color: #c3cfdf;
+}
+
+.dark .crumbs li + li::before {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.dark .crumbs a:hover,
+.dark .crumbs [aria-current] {
+  color: #fff;
+}
+
+.dark .axis {
+  background: linear-gradient(180deg, transparent, var(--sky));
+}
+
+/* A band of facts along the bottom of the opening. */
+.strip {
+  position: relative;
+  margin-top: clamp(48px, 7vw, 88px);
+  margin-bottom: calc(-1 * clamp(56px, 8vw, 104px));
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(3, 10, 22, 0.35);
+}

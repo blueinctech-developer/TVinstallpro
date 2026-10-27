@@ -1,0 +1,150 @@
+.hero {
+  position: relative;
+  background: radial-gradient(120% 80% at 50% 0%, #fff 30%, var(--surface) 100%);
+}
+
+.frame {
+  --p: 0;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(300px, 1fr) auto;
+  min-height: max(720px, 100svh);
+  padding-top: calc(var(--header-h) + clamp(24px, 4vh, 56px));
+  overflow: hidden;
+}
+
+/* The central axis runs from below the headline down through the TV and the price. */
+.axis {
+  top: 46%;
+}
+
+/* Soft light field behind the TV, on the axis. */
+.orb {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: min(80vw, 980px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(94, 176, 250, 0.32), rgba(10, 124, 234, 0.1) 55%, transparent 72%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.title {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  /* sized by width and height, so the whole hero (incl. price and CTAs) fits short laptop screens */
+  font-size: min(var(--step-5), 11vh);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  text-align: center;
+  padding-inline: var(--margin);
+}
+
+.where {
+  margin-top: clamp(14px, 2vh, 22px);
+  font-family: var(--font-text);
+  font-size: var(--step-1);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* Kinetic: the two lines drift apart along the horizontal as the hero scrolls away. */
+.line1 {
+  transform: translateX(calc(var(--p) * -14vw));
+}
+
+.line2 {
+  transform: translateX(calc(var(--p) * 10vw));
+}
+
+/* The TV floats just under the headline. */
+.stage {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(-40px, -2vw, -12px); /* the TV sits below the text so the grey words never cross its dark screen */
+  min-height: clamp(240px, 33vh, 500px);
+}
+
+.foot {
+  position: relative;
+  z-index: 2;
+  align-items: end;
+  row-gap: 24px;
+  padding-bottom: clamp(28px, 5vh, 56px);
+}
+
+.pitch {
+  grid-column: 1 / span 4;
+  color: var(--muted);
+  font-size: var(--step-1);
+  max-width: 34ch;
+}
+
+.price {
+  grid-column: 5 / span 4;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.priceLabel {
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.priceValue {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.ctas {
+  grid-column: 9 / span 4;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@media (max-width: 1080px) {
+  .pitch {
+    grid-column: 1 / span 6;
+  }
+  .price {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+  .ctas {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+  .pitch {
+    grid-column: 1 / -1;
+    justify-self: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .frame {
+    min-height: auto;
+    grid-template-rows: auto 280px auto;
+  }
+  .stage {
+    margin-top: -10px;
+  }
+  .ctas :global(.btn) {
+    flex: 1 1 100%;
+  }
+}

@@ -1,0 +1,48 @@
+.cta {
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--space-10);
+  background: radial-gradient(90% 120% at 50% 100%, #0a3e78 0%, var(--deep) 40%, var(--abyss) 80%);
+  color: var(--mist);
+  isolation: isolate;
+}
+
+.beam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, var(--sky) 60%, #fff);
+  box-shadow: 0 0 30px 4px rgba(10, 124, 234, 0.35);
+  z-index: -1;
+}
+
+.inner {
+  display: grid;
+  justify-items: center;
+  gap: 28px;
+  text-align: center;
+}
+
+.title {
+  color: #fff;
+  max-width: 12ch;
+}
+
+.ghost {
+  color: #9db0ca; /* ≥4.8:1 at every point of the gradient (AAA for large text), still distinct from the white words */
+}
+
+.lead {
+  max-width: 48ch;
+  font-size: var(--step-1);
+  color: #d3dce8; /* ≥7.9:1 even over the brightest part of the blue glow (AAA) */
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}

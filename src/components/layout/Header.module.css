@@ -1,0 +1,340 @@
+/* ==========================================================================
+   Header — axial: logo left · navigation centred on the axis · actions right.
+   Rules: one pill (the primary action), text links everywhere else, one height (44px),
+   one underline treatment (same as site links), tone follows the section underneath.
+   ========================================================================== */
+
+.header {
+  --fg: var(--text);
+  --fg-strong: var(--ink);
+  --accent: var(--brand-text);
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  transition: background-color var(--dur-ui) var(--ease-out), box-shadow var(--dur-ui) var(--ease-out);
+}
+
+/* Light surface (scrolled over light sections) */
+.header[data-scrolled] {
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: saturate(160%) blur(16px);
+  -webkit-backdrop-filter: saturate(160%) blur(16px);
+  box-shadow: 0 1px 0 var(--line);
+}
+
+/* Dark glass over dark sections (tunnel, finale, footer): light logo, light text. */
+.header[data-tone="dark"] {
+  --fg: var(--mist);
+  --fg-strong: #fff;
+  --accent: var(--sky);
+  --focus: var(--sky);
+}
+
+.header[data-tone="dark"][data-scrolled] {
+  background: rgba(3, 10, 22, 0.72);
+  box-shadow: 0 1px 0 var(--dark-line);
+}
+
+/* With the menu open, the bar sits on the white menu panel. */
+.header[data-open] {
+  background: #fff;
+  box-shadow: 0 1px 0 var(--line);
+}
+
+/* Equal side columns put the navigation exactly on the central axis. */
+.bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 24px;
+  height: var(--header-h);
+}
+
+.brand {
+  justify-self: start;
+  display: block;
+  height: 28px;
+  border-radius: 4px;
+}
+
+/* ---------- Navigation (text links, centred) ---------- */
+
+.nav ul {
+  display: flex;
+  gap: clamp(20px, 2.2vw, 36px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav a,
+.phone {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+  transition: color var(--dur-ui) var(--ease-out);
+}
+
+/* The site's link underline: grows from the left on hover, stays for the current page. */
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 8px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s var(--ease-out);
+}
+
+.nav a:hover,
+.nav a[aria-current="page"],
+.phone:hover {
+  color: var(--fg-strong);
+}
+
+.nav a:hover::after,
+.nav a[aria-current="page"]::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ---------- Actions ---------- */
+
+.actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.phone svg {
+  color: var(--accent);
+}
+
+/* .actions prefix beats the global .btn sizing, so every header element shares one 44px height */
+.actions .book {
+  min-height: 44px;
+  padding-inline: 20px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+/* Menu button: the site's secondary-button style (outline), shown only when the links fold away. */
+.toggle {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 18px 0 14px;
+  border: 1px solid var(--control);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--fg-strong);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out);
+}
+
+.toggle:hover {
+  border-color: var(--fg-strong);
+}
+
+.header[data-tone="dark"] .toggle {
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+/* Two lines that cross into an X */
+.toggleLines {
+  position: relative;
+  width: 16px;
+  height: 10px;
+}
+
+.toggleLines span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.4s var(--ease-out), top 0.4s var(--ease-out);
+}
+
+.toggleLines span:first-child {
+  top: 0;
+}
+
+.toggleLines span:last-child {
+  top: 8px;
+}
+
+.toggleLines[data-open] span:first-child {
+  top: 4px;
+  transform: rotate(45deg);
+}
+
+.toggleLines[data-open] span:last-child {
+  top: 4px;
+  transform: rotate(-45deg);
+}
+
+/* ---------- Full-screen menu ---------- */
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  padding-top: calc(var(--header-h) + 24px);
+  background: #fff;
+  overflow-y: auto;
+  animation: menu-in 0.5s var(--ease-out) both;
+}
+
+.menu[hidden] {
+  display: none;
+}
+
+.menuInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 48px;
+  padding-bottom: 48px;
+}
+
+.menuList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menuList li {
+  border-bottom: 1px solid var(--line);
+  animation: item-in 0.7s var(--ease-out) both;
+  animation-delay: calc(80ms + var(--i) * 45ms);
+}
+
+.menuList a {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  padding: 14px 0;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.2rem + 3.4vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--ink);
+  transition: color var(--dur-ui) var(--ease-out), transform var(--dur-ui) var(--ease-out);
+}
+
+.menuList a:hover,
+.menuList a[aria-current="page"] {
+  color: var(--brand-text);
+}
+
+.menuList a:hover {
+  transform: translateX(8px);
+}
+
+.menuNum {
+  font-family: var(--font-text);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.menuAside {
+  display: grid;
+  align-content: end;
+  gap: 12px;
+  min-width: 240px;
+}
+
+.menuArea {
+  color: var(--muted);
+}
+
+.menuPhone {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes item-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+/* ---------- Mobile action bar ---------- */
+
+.mobileBar {
+  display: none;
+}
+
+/* ---------- Breakpoints ----------
+   ≥1240px: full axial header. Below: the links fold into the Menu button
+   (nothing is ever squeezed or wrapped). ≤760px: the bottom bar carries Call + Book. */
+
+@media (max-width: 1240px) {
+  .nav {
+    display: none;
+  }
+  .toggle {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 760px) {
+  .actions .phone,
+  .actions .book {
+    display: none;
+  }
+  .menuInner {
+    grid-template-columns: 1fr;
+  }
+  .mobileBar {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 50;
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 8px;
+    padding: 10px var(--margin) calc(10px + env(safe-area-inset-bottom));
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 -1px 0 var(--line);
+  }
+  .mobileBar :global(.btn) {
+    min-height: 48px;
+  }
+  .mobileBar[hidden] {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .brand {
+    height: 24px;
+  }
+}

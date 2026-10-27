@@ -1,0 +1,70 @@
+.logo {
+  --logo-ink: var(--ink);
+  --logo-blue: var(--brand);
+  --logo-trail: #5eb0fa;
+  display: block;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 501 / 74;
+  overflow: visible;
+}
+
+.inverse {
+  --logo-ink: #ffffff;
+  --logo-blue: #3f9cf5;
+}
+
+.ink {
+  stroke: var(--logo-ink);
+}
+
+.blue {
+  stroke: var(--logo-blue);
+}
+
+.trail {
+  fill: none;
+  stroke: var(--logo-trail);
+  stroke-linecap: butt;
+  opacity: 0;
+}
+
+.head {
+  fill: var(--logo-blue);
+  stroke: #fff;
+  stroke-width: 1.6;
+}
+
+/* Animated instance: strokes start undrawn once JS is known to be running.
+   Without JS (no .js class) or if the script never starts, the finished logo shows. */
+.logo[data-animate]:not([data-state="done"]) [data-stroke] {
+  stroke-dasharray: 1 2;
+}
+
+:global(.js) .logo[data-animate]:not([data-state]) [data-stroke] {
+  stroke-dashoffset: 1;
+  animation: logo-failsafe 0s linear 4s forwards;
+}
+
+.logo[data-state="done"] .trail,
+.logo[data-state="done"] .head {
+  display: none;
+}
+
+@keyframes logo-failsafe {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo [data-stroke] {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+  .trail,
+  .head {
+    display: none;
+  }
+}

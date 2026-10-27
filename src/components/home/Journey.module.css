@@ -1,0 +1,99 @@
+.track {
+  --p: 0;
+  position: relative;
+}
+
+.steps {
+  position: relative;
+  display: grid;
+  gap: clamp(32px, 5vw, 64px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The axis itself */
+.axis {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: var(--line-strong);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background: var(--brand);
+  transform-origin: top;
+  transform: scaleY(clamp(0, calc((var(--p) - 0.2) * 1.8), 1));
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 72px 1fr;
+  align-items: center;
+}
+
+.node {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--line-strong);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink);
+  z-index: 1;
+}
+
+.body {
+  grid-row: 1;
+  display: grid;
+  gap: 8px;
+  max-width: 380px;
+}
+
+.step[data-side="left"] .body {
+  grid-column: 1;
+  justify-self: end;
+  text-align: right;
+}
+
+.step[data-side="right"] .body {
+  grid-column: 3;
+  justify-self: start;
+}
+
+.stepTitle {
+  font-size: var(--step-2);
+}
+
+.body p {
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .axis {
+    left: 28px;
+  }
+  .step {
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+  }
+  .node {
+    grid-column: 1;
+  }
+  .step[data-side] .body {
+    grid-column: 2;
+    justify-self: start;
+    text-align: left;
+  }
+}

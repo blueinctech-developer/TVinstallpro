@@ -1,0 +1,147 @@
+/* Hidden unless the layout script decided the intro should play. */
+.intro {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+}
+
+:global(html[data-site-intro="play"]) .intro,
+:global(html[data-site-intro="revealing"]) .intro {
+  display: block;
+}
+
+/* If the intro script never runs, get out of the way on our own. */
+:global(html[data-site-intro="play"]) .intro {
+  animation: site-intro-failsafe 0.5s ease 4.6s forwards;
+}
+
+/* Once the screen starts parting, clicks go straight to the page. */
+:global(html[data-site-intro="revealing"]) .intro {
+  pointer-events: none;
+}
+
+/* Two halves meeting on the central axis; they slide apart to reveal the page. */
+.door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50.1%;
+  background: radial-gradient(120% 80% at 100% 50%, #fff 40%, #eef3f9 100%);
+}
+
+.door[data-door="l"] {
+  left: 0;
+}
+
+.door[data-door="r"] {
+  right: 0;
+  background: radial-gradient(120% 80% at 0% 50%, #fff 40%, #eef3f9 100%);
+}
+
+.stage {
+  position: absolute;
+  inset: 0;
+}
+
+/* Hairlines entering from the four edges */
+.h,
+.v {
+  position: absolute;
+  background: var(--brand);
+}
+
+.h {
+  top: 50%;
+  width: 50%;
+  height: 1px;
+}
+
+.hl {
+  left: 0;
+  transform-origin: 0% 50%;
+  background: linear-gradient(90deg, transparent, var(--brand));
+}
+
+.hr {
+  right: 0;
+  transform-origin: 100% 50%;
+  background: linear-gradient(270deg, transparent, var(--brand));
+}
+
+.v {
+  left: 50%;
+  width: 1px;
+  height: 50%;
+}
+
+.vt {
+  top: 0;
+  transform-origin: 50% 0%;
+  background: linear-gradient(180deg, transparent, var(--brand));
+}
+
+.vb {
+  bottom: 0;
+  transform-origin: 50% 100%;
+  background: linear-gradient(0deg, transparent, var(--brand));
+}
+
+.node {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--brand);
+  box-shadow: 0 0 0 6px rgba(10, 124, 234, 0.14);
+}
+
+.center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 22px;
+  padding-inline: var(--margin);
+}
+
+.logo {
+  height: clamp(40px, 8vw, 80px);
+}
+
+/* Push the tagline below the axis so the logo itself sits on the centre point. */
+.tag {
+  position: absolute;
+  top: calc(50% + clamp(40px, 8vw, 80px) / 2 + 26px);
+  left: 0;
+  right: 0;
+  color: var(--muted);
+  font-size: clamp(0.85rem, 1.4vw, 1rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: center;
+  opacity: 0;
+}
+
+.tag span {
+  white-space: nowrap;
+}
+
+@keyframes site-intro-failsafe {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro {
+    display: none !important;
+  }
+}

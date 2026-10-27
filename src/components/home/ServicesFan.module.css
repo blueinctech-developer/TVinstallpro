@@ -1,0 +1,188 @@
+.services {
+  background: var(--bg);
+  overflow: hidden;
+}
+
+/* ---------- Fan ----------
+   --p: 0 → 1 through the section. The fan opens between p≈0.15 and p≈0.55. */
+.fanStage {
+  --p: 0;
+  --o: clamp(0, calc((var(--p) - 0.15) * 2.5), 1);
+  position: relative;
+  height: clamp(380px, 46vw, 620px);
+  margin-block: var(--space-7);
+  perspective: 1600px;
+}
+
+.fan {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+}
+
+.card {
+  --w: clamp(100px, 11.5vw, 190px);
+  position: absolute;
+  width: var(--w);
+  aspect-ratio: 9 / 15;
+  margin: calc(var(--w) * -0.83) 0 0 calc(var(--w) * -0.5);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--deep);
+  box-shadow: var(--shadow-float);
+  /* stacked (o=0): a tilted pile on the axis → fanned (o=1): spread across the axis at varied depth */
+  transform: translate3d(
+      calc(var(--i) * var(--o) * var(--w) * 1.12),
+      calc((1 - var(--o)) * var(--i) * -10px + var(--o) * (var(--i) * var(--i)) * 6px),
+      calc((1 - var(--o)) * var(--i) * 18px - var(--o) * var(--i) * var(--i) * 14px)
+    )
+    rotateX(calc((1 - var(--o)) * 58deg))
+    rotateZ(calc((1 - var(--o)) * -32deg + var(--o) * var(--i) * 2.5deg))
+    rotateY(calc(var(--o) * var(--i) * -6deg));
+  will-change: transform;
+}
+
+.card img {
+  object-fit: cover;
+  filter: grayscale(0.25) contrast(1.05);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* photo-to-dark fade under the card title: text sits on ≥92% navy, so white text stays ~17:1 */
+  background: linear-gradient(180deg, transparent 25%, rgba(3, 10, 22, 0.6) 48%, rgba(3, 10, 22, 0.94) 70%);
+}
+
+.cardTitle {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 1;
+  display: grid;
+  gap: 6px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(0.95rem, 0.62rem + 0.62vw, 1.3rem); /* decorative (aria-hidden) card label; the real service list follows */
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  text-wrap: balance;
+  opacity: var(--o);
+}
+
+.cardNum {
+  font-family: var(--font-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--sky);
+}
+
+/* ---------- Index ---------- */
+
+.index {
+  row-gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+/* Three columns: nine services make three full rows, so nothing is left on its own. */
+.index li {
+  grid-column: span 4;
+  border-bottom: 1px solid var(--line);
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "icon text arrow" ". price arrow";
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 8px;
+  height: 100%;
+  padding: 22px 4px;
+  transition: background-color var(--dur-ui) var(--ease-out);
+}
+
+.item:hover {
+  background: var(--surface);
+}
+
+.itemIcon {
+  grid-area: icon;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--brand-text);
+  transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out);
+}
+
+.item:hover .itemIcon {
+  background: var(--brand-strong);
+  color: #fff;
+}
+
+.itemText {
+  grid-area: text;
+  display: grid;
+  gap: 2px;
+}
+
+.itemTitle {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.itemShort {
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.itemPrice {
+  grid-area: price;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  font-weight: 700;
+  color: var(--brand-text);
+  white-space: nowrap;
+}
+
+.itemArrow {
+  grid-area: arrow;
+  color: var(--brand-text);
+  transition: transform var(--dur-ui) var(--ease-out);
+}
+
+.item:hover .itemArrow {
+  transform: translateX(4px);
+}
+
+@media (max-width: 1100px) {
+  .index li {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .card {
+    --w: 22vw;
+  }
+  .itemArrow {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fanStage {
+    --o: 1;
+  }
+}
