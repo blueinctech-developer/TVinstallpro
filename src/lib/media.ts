@@ -3,11 +3,13 @@ import { del, put } from "@vercel/blob";
 import { db } from "@/lib/db";
 
 /*
- * Media library on Vercel Blob (Vercel → Storage → Blob, connected to the project, adds
- * BLOB_READ_WRITE_TOKEN). Files are public URLs; the media table keeps the list, alt text and source.
+ * Media library on Vercel Blob. Connecting a Blob store to the project adds BLOB_STORE_ID; on Vercel
+ * the library then signs in with the deployment's own OIDC token (VERCEL_OIDC_TOKEN, automatic).
+ * Older stores, and scripts run locally, can use BLOB_READ_WRITE_TOKEN instead.
+ * Files are public URLs; the media table keeps the list, alt text and source.
  */
 
-export const blobConfigured = () => !!process.env.BLOB_READ_WRITE_TOKEN;
+export const blobConfigured = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 
 // Images only. SVG is excluded: it can carry scripts.
 export const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];

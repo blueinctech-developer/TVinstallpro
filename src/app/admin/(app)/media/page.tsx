@@ -30,7 +30,7 @@ export default async function MediaPage() {
           <Icon name="alert" size={18} />
           <span>
             Uploads aren&apos;t connected yet. In Vercel, open <strong>Storage → Create → Blob</strong>, connect it to this project (this adds{" "}
-            <code>BLOB_READ_WRITE_TOKEN</code>), then redeploy.
+            <code>BLOB_STORE_ID</code>), then redeploy.
           </span>
         </p>
       )}
