@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createRequest } from "@/lib/admin/requests";
+import { sendRequestEmails } from "@/lib/email";
 import { allow, clientIp } from "@/lib/rate-limit";
 
 /*
@@ -62,7 +63,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, delivered: false, reason: "rate_limited" }, { status: 429 });
     }
     const id = await createRequest({ ...payload, ip });
-    await forward(payload, id);
+    // Stored: from here on, a failed email or webhook only gets logged.
+    await Promise.all([
+      forward(payload, id),
+      sendRequestEmails({ ...payload, id, origin: new URL(req.url).origin }).catch((e) => console.error(`[enquiry] request ${id} saved, alert failed:`, e)),
+    ]);
     return NextResponse.json({ ok: true, delivered: true });
   } catch (err) {
     console.error("[enquiry] could not store request:", err);

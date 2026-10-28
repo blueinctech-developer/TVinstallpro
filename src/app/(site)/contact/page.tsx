@@ -6,22 +6,28 @@ import { Icon } from "@/components/Icon";
 import { PageHero } from "@/components/page/PageHero";
 import page from "@/components/page/page.module.css";
 import { faqs } from "@/lib/content";
-import { site } from "@/lib/site";
+import { getSiteData } from "@/lib/site-data";
+import type { SiteData } from "@/lib/site-defaults";
 import styles from "./contact.module.css";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: `Call ${site.phone}, message us on WhatsApp, or send ${site.name} a message.`,
-  alternates: { canonical: "/contact" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = (await getSiteData()).business;
+  return {
+    title: "Contact",
+    description: `Call ${site.phone}, message us on WhatsApp, or send ${site.name} a message.`,
+    alternates: { canonical: "/contact" },
+  };
+}
 
-const channels = [
+const channelsFor = (site: SiteData["business"]) => [
   { icon: "phone" as const, label: "Call", value: site.phone, href: site.phoneHref },
   { icon: "whatsapp" as const, label: "WhatsApp", value: "Message a technician", href: site.whatsapp, external: true },
   { icon: "mail" as const, label: "Email", value: site.email, href: `mailto:${site.email}` },
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const site = (await getSiteData()).business;
+  const channels = channelsFor(site);
   return (
     <>
       <PageHero

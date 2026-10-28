@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
-import { money, tvFrom } from "@/lib/pricing";
-import { bookHref, site } from "@/lib/site";
+import { money, tvFromOf } from "@/lib/pricing";
+import { getSiteData } from "@/lib/site-data";
+import { bookHref } from "@/lib/site";
 import styles from "./BookingCta.module.css";
 
-export function BookingCta() {
+export async function BookingCta() {
+  const { business: site, prices } = await getSiteData();
+  const tvFrom = tvFromOf(prices);
   return (
     <section className={`${styles.cta} on-dark`} data-header="dark" aria-labelledby="cta-title">
       <span className={styles.beam} aria-hidden="true" />

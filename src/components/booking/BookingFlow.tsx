@@ -4,25 +4,8 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Choices, Field, Honeypot, SubmitOutcome } from "@/components/forms/Fields";
 import { Icon } from "@/components/Icon";
-import { serviceBySlug, services } from "@/lib/content";
-import {
-  addOns,
-  concealment,
-  deviceSetupPrice,
-  devicesBehindPrice,
-  emptyTvSelection,
-  estimateLines,
-  estimateTotal,
-  fireplaceSurcharge,
-  maintenance,
-  money,
-  mounts,
-  surfaces,
-  takedownPrice,
-  tvSizes,
-  type TvSelection,
-} from "@/lib/pricing";
-import { site } from "@/lib/site";
+import { useSiteData } from "@/components/SiteData";
+import { emptyTvSelection, estimateLines, estimateTotal, money, type TvSelection } from "@/lib/pricing";
 import { submitEnquiry, type SubmitResult } from "@/lib/submit";
 import styles from "./BookingFlow.module.css";
 
@@ -55,6 +38,10 @@ const emailOk = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 const phoneOk = (v: string) => v.replace(/\D/g, "").length >= 10;
 
 export function BookingFlow({ initialService }: { initialService?: string }) {
+  // Services, prices and contact details as saved in the admin.
+  const { business: site, services, prices } = useSiteData();
+  const { tvSizes, mounts, fireplaceSurcharge, surfaces, concealment, addOns, takedownPrice, deviceSetupPrice, devicesBehindPrice, maintenance } = prices;
+  const serviceBySlug = (slug?: string | null) => services.find((x) => x.slug === slug);
   const preset = serviceBySlug(initialService)?.slug ?? "";
   const [service, setService] = useState(preset);
   const [tv, setTv] = useState<TvSelection>({ ...emptyTvSelection, takedown: false });
@@ -74,8 +61,8 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
     : ["service", "details", "review"];
   const index = steps.indexOf(step);
   const svc = serviceBySlug(service);
-  const lines = useMemo(() => estimateLines(tv), [tv]);
-  const total = estimateTotal(tv);
+  const lines = useMemo(() => estimateLines(tv, prices), [tv, prices]);
+  const total = estimateTotal(tv, prices);
 
   // Move focus to the new step's heading (not on first load).
   useEffect(() => {

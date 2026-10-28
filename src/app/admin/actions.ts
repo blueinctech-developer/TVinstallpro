@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { endSession, logActivity, requireUser, startSession, currentUser } from "@/lib/admin/auth";
-import { dummyHash, verifyPassword } from "@/lib/admin/password";
+import { dummyHash, hashPassword, needsRehash, verifyPassword } from "@/lib/admin/password";
 import { addNote, setStatus } from "@/lib/admin/requests";
 import { isStatus } from "@/lib/admin/vocab";
 import { db } from "@/lib/db";
@@ -24,14 +24,21 @@ export async function login(_: LoginState, form: FormData): Promise<LoginState> 
   const ok = (await allow(`login-ip:${ip}`, 20, 900)) && (await allow(`login-email:${email}`, 8, 900));
   if (!ok) return { error: "Too many sign-in attempts. Wait 15 minutes and try again.", email };
 
-  const [user] = await (await db()).query<{ id: number; password_hash: string; disabled: boolean }>(
-    "select id, password_hash, disabled from admin_users where email = $1",
+  // Email, or the username people used on the old WordPress site.
+  const conn = await db();
+  const [user] = await conn.query<{ id: number; password_hash: string; disabled: boolean }>(
+    "select id, password_hash, disabled from admin_users where email = $1 or lower(username) = $1 order by (email = $1) desc limit 1",
     [email],
   );
   const valid = await verifyPassword(password, user?.password_hash ?? dummyHash);
   if (!user || !valid || user.disabled) {
     await logActivity(user?.id ?? null, "sign-in failed", email, { ip });
     return { error: SIGN_IN_FAILED, email };
+  }
+  // Imported WordPress hash: now that the password is known to be right, store it as scrypt.
+  if (needsRehash(user.password_hash)) {
+    await conn.query("update admin_users set password_hash = $2 where id = $1", [user.id, await hashPassword(password)]);
+    await logActivity(user.id, "password upgraded from WordPress hash");
   }
   await startSession(user.id);
   await logActivity(user.id, "signed in", undefined, { ip });

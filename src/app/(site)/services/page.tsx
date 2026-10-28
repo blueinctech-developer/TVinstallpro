@@ -6,22 +6,9 @@ import { Icon } from "@/components/Icon";
 import { PageHero } from "@/components/page/PageHero";
 import { SectionHead } from "@/components/page/SectionHead";
 import page from "@/components/page/page.module.css";
-import { otherServices, services } from "@/lib/content";
-import {
-  addOns,
-  concealment,
-  deviceSetupPrice,
-  devicesBehindPrice,
-  fireplaceSurcharge,
-  maintenance,
-  money,
-  mounts,
-  surfaces,
-  takedownPrice,
-  tvFrom,
-  tvSizes,
-  type Choice,
-} from "@/lib/pricing";
+import { otherServices, services as defaultServices } from "@/lib/content";
+import { money, tvFromOf, type Choice } from "@/lib/pricing";
+import { getSiteData } from "@/lib/site-data";
 import styles from "./services.module.css";
 
 export const metadata: Metadata = {
@@ -31,7 +18,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/services" },
 };
 
-const tables: { title: string; rows: Choice[]; prefix?: string }[] = [
+export default async function ServicesPage() {
+  const { services, prices } = await getSiteData();
+  const { tvSizes, mounts, surfaces, concealment, addOns, maintenance, fireplaceSurcharge, takedownPrice, deviceSetupPrice, devicesBehindPrice } = prices;
+  const tvFrom = tvFromOf(prices);
+  const tables: { title: string; rows: Choice[]; prefix?: string }[] = [
   { title: "TV size", rows: tvSizes },
   { title: "Wall mount", rows: mounts },
   { title: "Wall surface", rows: surfaces, prefix: "+" },
@@ -39,10 +30,8 @@ const tables: { title: string; rows: Choice[]; prefix?: string }[] = [
   { title: "Add-ons", rows: addOns, prefix: "+" },
   { title: "Extended maintenance", rows: maintenance, prefix: "+" },
 ];
-
-export default function ServicesPage() {
-  const tv = services[0];
-  const rest = services.slice(1);
+  const tv = services.find((s) => s.estimator) ?? defaultServices[0];
+  const rest = services.filter((s) => s !== tv);
 
   return (
     <>

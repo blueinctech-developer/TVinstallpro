@@ -5,13 +5,13 @@ import { NextResponse, type NextRequest } from "next/server";
  *    and send visitors with no session cookie at all to the sign-in page. The real check
  *    (session valid, user enabled, role allowed) happens in requireUser() on every admin
  *    page, action and route.
- * 2. The old WordPress theme's demo content (dry-cleaning posts, sample team, portfolio):
+ * 2. The old WordPress theme's demo URLs (dry-cleaning posts, sample team, portfolio items):
  *    410 Gone, so search engines drop it. It has no real replacement, so it isn't
  *    redirected to the home page. Moved pages are redirected in next.config.ts.
  */
 
 const gone =
-  /^\/(portfolio|service|team-member|testimonial|category|tag|author)(\/|$)|^\/(blog|blog-2|home-01|home-03|sample-page|elementor-7780|our-team|our-portfolio|how-to-clean-your-woolens-and-cashmere-items-in-your-home|wedding-suit-deserves-special-treatment-in-dry-clening|we-wash-clothes-with-the-best-detergent|10-reasons-to-hire-professional-dry-cleaner-services|we-wash-shirts-and-pantsdrying-with-the-best-detergent)\/?$/;
+  /^\/(portfolio|service|team-member|testimonial|category|tag|author)(\/|$)|^\/(blog-2|home-01|home-03|sample-page|elementor-7780|our-team|how-to-clean-your-woolens-and-cashmere-items-in-your-home|wedding-suit-deserves-special-treatment-in-dry-clening|we-wash-clothes-with-the-best-detergent|10-reasons-to-hire-professional-dry-cleaner-services|we-wash-shirts-and-pantsdrying-with-the-best-detergent)\/?$/;
 
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -25,11 +25,14 @@ export function proxy(req: NextRequest) {
     );
   }
 
-  const isLogin = pathname === "/admin/login";
+  // Sign-in and the one-time password-link page must open without a session.
+  const isPublic = pathname === "/admin/login" || pathname === "/admin/setup";
   const res =
-    !isLogin && !req.cookies.has("tvip_admin") ? NextResponse.redirect(new URL("/admin/login", req.url)) : NextResponse.next();
+    !isPublic && !req.cookies.has("tvip_admin") ? NextResponse.redirect(new URL("/admin/login", req.url)) : NextResponse.next();
   res.headers.set("X-Robots-Tag", "noindex, nofollow");
   res.headers.set("Cache-Control", "no-store");
+  // Password links carry a token in the URL: never send it to other sites as a Referer.
+  res.headers.set("Referrer-Policy", "no-referrer");
   return res;
 }
 
@@ -44,14 +47,12 @@ export const config = {
     "/category/:path*",
     "/tag/:path*",
     "/author/:path*",
-    "/blog",
     "/blog-2",
     "/home-01",
     "/home-03",
     "/sample-page",
     "/elementor-7780",
     "/our-team",
-    "/our-portfolio",
     "/how-to-clean-your-woolens-and-cashmere-items-in-your-home",
     "/wedding-suit-deserves-special-treatment-in-dry-clening",
     "/we-wash-clothes-with-the-best-detergent",

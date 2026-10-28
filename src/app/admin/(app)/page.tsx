@@ -43,8 +43,8 @@ export default async function Overview({ searchParams }: { searchParams: Promise
 
       {denied && (
         <p className={styles.notice} data-kind="warn" role="status">
-          <Icon name="alert" size={18} /> Your account can view requests but can&apos;t change them. Ask an administrator if you need
-          that.
+          <Icon name="alert" size={18} /> That page or action needs a higher role than your account has. Ask an administrator if you
+          need access.
         </p>
       )}
 

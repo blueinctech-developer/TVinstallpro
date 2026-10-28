@@ -10,13 +10,14 @@ export function LoginForm() {
   return (
     <form action={action} className={styles.loginForm} noValidate>
       <label className={styles.control}>
-        Email
+        Email or username
         <input
           className={styles.input}
           name="email"
-          type="email"
+          type="text"
           autoComplete="username"
-          inputMode="email"
+          autoCapitalize="none"
+          spellCheck={false}
           required
           defaultValue={state.email}
           aria-invalid={state.error ? true : undefined}

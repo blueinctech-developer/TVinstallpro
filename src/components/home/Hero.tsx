@@ -7,11 +7,14 @@ import { Icon } from "@/components/Icon";
 import { IntroMotion } from "@/components/motion/IntroMotion";
 import { SplitChars } from "@/components/motion/SplitChars";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
-import { money, tvFrom } from "@/lib/pricing";
-import { bookHref, site } from "@/lib/site";
+import { useSiteData } from "@/components/SiteData";
+import { money, tvFromOf } from "@/lib/pricing";
+import { bookHref } from "@/lib/site";
 import styles from "./Hero.module.css";
 
 export function Hero() {
+  const { business: site, prices } = useSiteData();
+  const tvFrom = tvFromOf(prices);
   const progress = useRef(0);
   // Scroll progress drives the headline drift (CSS --p) and the TV's pose (ref).
   const ref = useScrollProgress<HTMLDivElement>("leave", (p) => {

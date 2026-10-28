@@ -75,11 +75,39 @@ export type TvSelection = {
 
 export const emptyTvSelection: TvSelection = { addOns: [], deviceSetup: 0, devicesBehind: 0 };
 
+/** Every price the estimator uses. The constants above are the defaults; the admin can override them. */
+export type PriceBook = {
+  tvSizes: Choice[];
+  mounts: Choice[];
+  fireplaceSurcharge: number;
+  surfaces: Choice[];
+  concealment: Choice[];
+  addOns: Choice[];
+  takedownPrice: number;
+  deviceSetupPrice: number;
+  devicesBehindPrice: number;
+  maintenance: Choice[];
+};
+
+export const defaultPrices: PriceBook = {
+  tvSizes,
+  mounts,
+  fireplaceSurcharge,
+  surfaces,
+  concealment,
+  addOns,
+  takedownPrice,
+  deviceSetupPrice,
+  devicesBehindPrice,
+  maintenance,
+};
+
 const priceOf = (list: Choice[], id?: string) => list.find((c) => c.id === id)?.price ?? 0;
 
 export type EstimateLine = { label: string; amount: number };
 
-export function estimateLines(s: TvSelection): EstimateLine[] {
+export function estimateLines(s: TvSelection, p: PriceBook = defaultPrices): EstimateLine[] {
+  const { tvSizes, mounts, fireplaceSurcharge, surfaces, concealment, addOns, takedownPrice, deviceSetupPrice, devicesBehindPrice, maintenance } = p;
   const lines: EstimateLine[] = [];
   const push = (label: string, amount: number) => amount > 0 && lines.push({ label, amount });
   const named = (list: Choice[], id?: string) => list.find((c) => c.id === id)?.label ?? "";
@@ -100,10 +128,11 @@ export function estimateLines(s: TvSelection): EstimateLine[] {
   return lines;
 }
 
-export const estimateTotal = (s: TvSelection) => estimateLines(s).reduce((sum, l) => sum + l.amount, 0);
+export const estimateTotal = (s: TvSelection, p: PriceBook = defaultPrices) => estimateLines(s, p).reduce((sum, l) => sum + l.amount, 0);
 
 export const money = (n: number) =>
   n.toLocaleString("en-CA", { style: "currency", currency: "CAD", minimumFractionDigits: n % 1 ? 2 : 0 });
 
 /** The lowest possible TV-mounting estimate: smallest TV, own mount, no extras. */
 export const tvFrom = tvSizes[0].price;
+export const tvFromOf = (p: PriceBook) => Math.min(...p.tvSizes.map((c) => c.price));

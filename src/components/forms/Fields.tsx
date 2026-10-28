@@ -2,7 +2,7 @@
 
 import { useId, type ReactNode } from "react";
 import { Icon } from "@/components/Icon";
-import { site } from "@/lib/site";
+import { useSiteData } from "@/components/SiteData";
 import type { SubmitResult } from "@/lib/submit";
 import styles from "./forms.module.css";
 
@@ -145,6 +145,7 @@ export function Honeypot({ value, onChange }: { value: string; onChange: (v: str
 
 /** Outcome of a submission. Success is shown only when the server confirmed delivery. */
 export function SubmitOutcome({ result, sentTitle, sentText, children }: { result: SubmitResult | null; sentTitle: string; sentText: ReactNode; children?: ReactNode }) {
+  const site = useSiteData().business;
   if (!result || result.status === "invalid") return null;
   if (result.status === "sent") {
     return (
