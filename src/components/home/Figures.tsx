@@ -6,14 +6,14 @@ import { Icon } from "@/components/Icon";
 import { Odometer } from "@/components/motion/Odometer";
 import { SplitChars } from "@/components/motion/SplitChars";
 import { SectionHead } from "@/components/page/SectionHead";
-import { services } from "@/lib/content";
-import { tvFrom } from "@/lib/pricing";
-import { site } from "@/lib/site";
+import { useSiteData } from "@/components/SiteData";
+import { tvFromOf } from "@/lib/pricing";
+import type { SiteData } from "@/lib/site-defaults";
 import styles from "./Figures.module.css";
 
 // Only figures published by the business (see docs/audit.md). No invented statistics.
-const rows = [
-  { value: `$${tvFrom.toFixed(2)}`, label: "TV mounting starts at", status: "Instant estimate" },
+const rowsFor = ({ business: site, services, prices }: SiteData) => [
+  { value: `${tvFromOf(prices).toFixed(2)}`, label: "TV mounting starts at", status: "Instant estimate" },
   { value: String(site.warrantyMonths), label: "Month warranty on installation work", status: "Warranty included" },
   { value: String(site.componentsIncluded), label: "Existing components connected in a standard install", status: "Included" },
   { value: String(services.length), label: "Installation services, one team", status: "Same-day often available" },
@@ -27,6 +27,7 @@ const rows = [
  * Without JS / with reduced motion everything is simply shown in its final state.
  */
 export function Figures() {
+  const rows = rowsFor(useSiteData());
   const ref = useRef<HTMLElement>(null);
   const [played, setPlayed] = useState<boolean[]>(() => rows.map(() => false));
 

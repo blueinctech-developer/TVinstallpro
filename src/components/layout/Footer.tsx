@@ -4,11 +4,12 @@ import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/logo/Logo";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
-import { services } from "@/lib/content";
-import { bookHref, nav, site } from "@/lib/site";
+import { useSiteData } from "@/components/SiteData";
+import { bookHref, nav } from "@/lib/site";
 import styles from "./Footer.module.css";
 
 export function Footer() {
+  const { business: site, services } = useSiteData();
   // The wordmark slides sideways only as the visitor scrolls (never auto-plays).
   const ref = useScrollProgress<HTMLElement>("enter");
 

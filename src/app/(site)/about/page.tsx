@@ -5,24 +5,30 @@ import { Journey } from "@/components/home/Journey";
 import { PageHero } from "@/components/page/PageHero";
 import page from "@/components/page/page.module.css";
 import { images } from "@/lib/content";
-import { site } from "@/lib/site";
+import { getSiteData } from "@/lib/site-data";
+import type { SiteData } from "@/lib/site-defaults";
 import styles from "./about.module.css";
 
-export const metadata: Metadata = {
-  title: "About",
-  description: `${site.name} provides professional, affordable, on-time TV and home installation in ${site.area}.`,
-  alternates: { canonical: "/about" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = (await getSiteData()).business;
+  return {
+    title: "About",
+    description: `${site.name} provides professional, affordable, on-time TV and home installation in ${site.area}.`,
+    alternates: { canonical: "/about" },
+  };
+}
 
 // Paraphrased from the live About page (see docs/audit.md).
-const principles = [
+const principlesFor = (site: SiteData["business"]) => [
   { word: "Quality", text: "Skilled technicians and the right hardware for the job, using current tools and equipment." },
   { word: "Affordable", text: "Professional installation without big-box pricing, with every option itemised up front." },
   { word: "On time", text: "We arrive when we say we will and finish with as little disruption to your home as possible." },
   { word: "Covered", text: `Installation work comes with a ${site.warrantyMonths}-month warranty.` },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const site = (await getSiteData()).business;
+  const principles = principlesFor(site);
   return (
     <>
       <PageHero

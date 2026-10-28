@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "@/components/Icon";
 import { Logo } from "@/components/logo/Logo";
-import { bookHref, nav, site } from "@/lib/site";
+import { useSiteData } from "@/components/SiteData";
+import { bookHref, nav } from "@/lib/site";
 import styles from "./Header.module.css";
 
 /**
@@ -14,6 +15,7 @@ import styles from "./Header.module.css";
  * (marked data-header="dark") the bar switches to dark glass with the light logo.
  */
 export function Header() {
+  const site = useSiteData().business;
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);

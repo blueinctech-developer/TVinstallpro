@@ -104,4 +104,132 @@ export const migrations: Migration[] = [
       );
     `,
   },
+  {
+    version: 2,
+    name: "users, settings, media and site content",
+    sql: `
+      -- WordPress usernames sign in too; source shows which accounts came from the old site.
+      alter table admin_users add column username text unique;
+      alter table admin_users add column source text not null default 'admin' check (source in ('admin', 'wordpress'));
+
+      -- One-time links to set or reset a password. id is the SHA-256 of the token in the link.
+      create table admin_tokens (
+        id text primary key,
+        user_id integer not null references admin_users(id) on delete cascade,
+        purpose text not null check (purpose in ('setup', 'reset')),
+        created_by integer references admin_users(id),
+        created_at timestamptz not null default now(),
+        expires_at timestamptz not null,
+        used_at timestamptz
+      );
+
+      -- Editable site settings (business details, prices, tracking, email). Secrets stay in env vars.
+      create table settings (
+        key text primary key,
+        value jsonb not null,
+        updated_at timestamptz not null default now(),
+        updated_by integer references admin_users(id)
+      );
+
+      create table media (
+        id integer generated always as identity primary key,
+        url text not null,
+        pathname text,
+        filename text not null,
+        content_type text,
+        size integer,
+        alt text not null default '',
+        source text not null default 'upload' check (source in ('upload', 'wordpress')),
+        legacy_url text unique,
+        created_by integer references admin_users(id),
+        created_at timestamptz not null default now()
+      );
+      create index media_created on media(created_at desc);
+
+      create table posts (
+        id integer generated always as identity primary key,
+        slug text not null unique,
+        title text not null,
+        excerpt text not null default '',
+        body text not null default '',  -- Markdown
+        status text not null default 'draft' check (status in ('draft', 'published')),
+        cover_media_id integer references media(id) on delete set null,
+        comments_open boolean not null default true,
+        seo_title text,
+        seo_description text,
+        author_id integer references admin_users(id),
+        legacy_id integer unique,
+        published_at timestamptz,
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      );
+
+      create table comments (
+        id integer generated always as identity primary key,
+        post_id integer references posts(id) on delete cascade,
+        author_name text not null,
+        author_email text,
+        body text not null,
+        status text not null default 'pending' check (status in ('pending', 'approved', 'spam', 'trash')),
+        ip text,
+        user_agent text,
+        legacy_id integer unique,
+        created_at timestamptz not null default now()
+      );
+      create index comments_status on comments(status, created_at desc);
+      create index comments_post on comments(post_id, created_at);
+
+      create table portfolio (
+        id integer generated always as identity primary key,
+        slug text not null unique,
+        title text not null,
+        description text not null default '',
+        service text,
+        media_ids integer[] not null default '{}',
+        status text not null default 'draft' check (status in ('draft', 'published')),
+        sort integer not null default 0,
+        legacy_id integer unique,
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      );
+
+      create table team (
+        id integer generated always as identity primary key,
+        name text not null,
+        role_title text not null default '',
+        bio text not null default '',
+        photo_media_id integer references media(id) on delete set null,
+        status text not null default 'draft' check (status in ('draft', 'published')),
+        sort integer not null default 0,
+        legacy_id integer unique,
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      );
+
+      create table testimonials (
+        id integer generated always as identity primary key,
+        author text not null,
+        location text not null default '',
+        body text not null,
+        rating integer check (rating between 1 and 5),
+        source text not null default '',
+        status text not null default 'draft' check (status in ('draft', 'published')),
+        sort integer not null default 0,
+        legacy_id integer unique,
+        created_at timestamptz not null default now(),
+        updated_at timestamptz not null default now()
+      );
+
+      create table email_log (
+        id integer generated always as identity primary key,
+        to_addr text not null,
+        subject text not null,
+        status text not null check (status in ('sent', 'failed', 'skipped')),
+        error text,
+        request_id integer references requests(id) on delete set null,
+        created_at timestamptz not null default now()
+      );
+      create index email_log_created on email_log(created_at desc);
+    `,
+  },
 ];

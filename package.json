@@ -7,25 +7,38 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "admin:create": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/create-admin.ts",
-    "import:wordpress": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-wordpress.ts"
+    "admin:create": "node --env-file-if-exists=.env.local --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/create-admin.ts",
+    "import:wordpress": "node --env-file-if-exists=.env.local --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-wordpress.ts",
+    "import:wp-backup": "node --env-file-if-exists=.env.local --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-wp-backup.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "0.5.9",
     "@react-three/fiber": "^9.8.2",
+    "@vercel/blob": "2.8.2",
     "animejs": "^4.5.0",
+    "bcryptjs": "3.0.3",
+    "marked": "18.1.1",
     "next": "^16.4.3",
+    "nodemailer": "10.2.1",
     "postgres": "3.4.9",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "sanitize-html": "2.18.1",
     "server-only": "0.0.1",
     "three": "^0.186.1"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",
+    "@types/nodemailer": "8.0.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@types/sanitize-html": "2.16.2",
     "@types/three": "^0.186.0",
+    "@types/turndown": "5.0.6",
+    "turndown": "7.2.4",
     "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "zod": "^4.6.6"
   }
 }

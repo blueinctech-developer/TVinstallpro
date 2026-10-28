@@ -9,7 +9,10 @@ import { AdminNav } from "./AdminNav";
 
 export default async function AdminShell({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
-  const [{ n }] = await (await db()).query<{ n: number }>("select count(*)::int as n from requests where status = 'new'");
+  const [counts] = await (await db()).query<{ requests: number; comments: number }>(
+    `select (select count(*)::int from requests where status = 'new') as requests,
+            (select count(*)::int from comments where status = 'pending') as comments`,
+  );
   return (
     <div className={styles.shell}>
       <aside className={styles.side}>
@@ -17,7 +20,7 @@ export default async function AdminShell({ children }: { children: React.ReactNo
           <Logo />
           <span className={styles.brandTag}>Admin</span>
         </Link>
-        <AdminNav newCount={n} />
+        <AdminNav role={user.role} counts={counts} />
         <div className={styles.sideFoot}>
           <div className={styles.who}>
             <strong>{user.name}</strong>

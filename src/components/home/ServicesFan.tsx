@@ -5,11 +5,9 @@ import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 import { SectionHead } from "@/components/page/SectionHead";
-import { services } from "@/lib/content";
-import { money, tvFrom } from "@/lib/pricing";
+import { useSiteData } from "@/components/SiteData";
+import { money, tvFromOf } from "@/lib/pricing";
 import styles from "./ServicesFan.module.css";
-
-const FAN = services; // all nine services
 
 /**
  * A stack of service "screens" that fans out across the axis as the section scrolls
@@ -17,6 +15,9 @@ const FAN = services; // all nine services
  * Followed by a plain, keyboard-friendly index of every service.
  */
 export function ServicesFan() {
+  const { services, prices } = useSiteData();
+  const FAN = services; // every published service
+  const tvFrom = tvFromOf(prices);
   const ref = useScrollProgress<HTMLDivElement>("through");
 
   return (

@@ -56,7 +56,23 @@
 
 .nav {
   display: grid;
+  gap: var(--space-4);
+  min-height: 0;
+  overflow-y: auto;
+  margin-right: -8px;
+  padding-right: 8px;
+}
+
+.navGroup {
+  display: grid;
   gap: 2px;
+}
+
+.navTitle {
+  padding: 0 var(--space-4) 4px;
+  color: var(--muted);
+  font-size: var(--step--1);
+  font-weight: 700;
 }
 
 .navLink {
@@ -167,6 +183,12 @@
     display: flex;
     gap: var(--space-1);
     overflow-x: auto;
+  }
+  .navGroup {
+    display: contents;
+  }
+  .navTitle {
+    display: none;
   }
   .navLink {
     flex: none;
