@@ -18,6 +18,14 @@
   top: 46%;
 }
 
+/* On phones the hero is one centred column, so the axis would run through the price, copy and
+   buttons. Below the TV it reads as a glitch, not a guide: hide it (the About page does the same). */
+@media (max-width: 760px) {
+  .axis {
+    display: none;
+  }
+}
+
 /* Soft light field behind the TV, on the axis. */
 .orb {
   position: absolute;
