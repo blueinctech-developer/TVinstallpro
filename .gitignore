@@ -27,3 +27,6 @@ next-env.d.ts
 
 # claude
 .claude/settings.local.json
+
+# local database (real customer data in dev; never commit)
+/.data/
