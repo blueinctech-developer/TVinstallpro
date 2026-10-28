@@ -170,8 +170,9 @@ for (const a of attachments) {
     rep("media").notes.push(`${rel}: SVG skipped (can carry scripts)`);
     continue;
   }
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    rep("media").notes.push("BLOB_READ_WRITE_TOKEN not set: media not uploaded");
+  // Locally: BLOB_READ_WRITE_TOKEN, or BLOB_STORE_ID + VERCEL_OIDC_TOKEN from `vercel env pull`.
+  if (!process.env.BLOB_READ_WRITE_TOKEN && !(process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN)) {
+    rep("media").notes.push("No Blob credentials (BLOB_READ_WRITE_TOKEN, or BLOB_STORE_ID + VERCEL_OIDC_TOKEN): media not uploaded");
     break;
   }
   if (dryRun) {
