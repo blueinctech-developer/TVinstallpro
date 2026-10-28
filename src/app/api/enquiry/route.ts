@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
+import { createRequest } from "@/lib/admin/requests";
+import { allow, clientIp } from "@/lib/rate-limit";
 
 /*
- * Receives booking, contact and partnership requests from the site and forwards them.
+ * Receives booking, contact and partner requests from the site.
  *
- * Delivery: set ENQUIRY_WEBHOOK_URL (e.g. a Formspree, Make, Zapier or CRM webhook that
- * emails/stores the request). Until it is set, requests are NOT delivered and the client
- * is told so (503), so it can offer the visitor another way to reach the business.
+ * Every request is saved to the database first (it appears in /admin straight away).
+ * The visitor is told it was received only once that save succeeds; if the database
+ * is unreachable they get a 503 and the page offers email / phone / WhatsApp instead.
+ *
+ * Optional: ENQUIRY_WEBHOOK_URL also forwards a copy (e.g. to an email or CRM webhook).
+ * A failed forward is logged but doesn't fail the request, since it is already stored.
  */
 
 type Kind = "booking" | "contact" | "partner";
@@ -38,6 +43,8 @@ export async function POST(req: Request) {
   if (!emailOk(email)) errors.push("email");
   if (errors.length) return NextResponse.json({ ok: false, error: "Please check the highlighted fields.", fields: errors }, { status: 422 });
 
+  const details = typeof body.details === "object" && body.details !== null && !Array.isArray(body.details) ? body.details : {};
+  if (JSON.stringify(details).length > 20000) return NextResponse.json({ ok: false, error: "Request too large." }, { status: 413 });
   const payload = {
     kind,
     submittedAt: new Date().toISOString(),
@@ -45,25 +52,35 @@ export async function POST(req: Request) {
     email,
     phone,
     summary: str(body.summary, 6000),
-    details: typeof body.details === "object" && body.details !== null ? body.details : {},
+    details: details as Record<string, unknown>,
   };
+  const ip = clientIp(req.headers);
 
-  const url = process.env.ENQUIRY_WEBHOOK_URL;
-  if (!url) {
-    console.warn("[enquiry] ENQUIRY_WEBHOOK_URL is not set; request not delivered:", payload.kind, payload.name);
-    return NextResponse.json({ ok: false, delivered: false, reason: "not_configured" }, { status: 503 });
+  try {
+    // 8 requests per 10 minutes per visitor is generous for people, and stops bulk spam.
+    if (!(await allow(`enquiry:${ip}`, 8, 600))) {
+      return NextResponse.json({ ok: false, delivered: false, reason: "rate_limited" }, { status: 429 });
+    }
+    const id = await createRequest({ ...payload, ip });
+    await forward(payload, id);
+    return NextResponse.json({ ok: true, delivered: true });
+  } catch (err) {
+    console.error("[enquiry] could not store request:", err);
+    return NextResponse.json({ ok: false, delivered: false, reason: "storage_failed" }, { status: 503 });
   }
+}
 
+async function forward(payload: object, id: number) {
+  const url = process.env.ENQUIRY_WEBHOOK_URL;
+  if (!url) return;
   try {
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ ...payload, id }),
     });
     if (!res.ok) throw new Error(`Webhook responded ${res.status}`);
-    return NextResponse.json({ ok: true, delivered: true });
   } catch (err) {
-    console.error("[enquiry] delivery failed:", err);
-    return NextResponse.json({ ok: false, delivered: false, reason: "delivery_failed" }, { status: 502 });
+    console.error(`[enquiry] request ${id} saved, but forwarding to the webhook failed:`, err);
   }
 }

@@ -1,10 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Jura, Manrope } from "next/font/google";
 import { siteIntroScript } from "@/components/intro/introState";
-import { SiteIntro } from "@/components/intro/SiteIntro";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
-import { ScrollReveal } from "@/components/motion/ScrollReveal";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -37,17 +33,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#ffffff" };
 
-const localBusiness = {
-  "@context": "https://schema.org",
-  "@type": "HomeAndConstructionBusiness",
-  name: site.name,
-  url: site.url,
-  telephone: "+1-418-334-7761",
-  description: site.description,
-  areaServed: ["Ottawa", "Gatineau"],
-  priceRange: "$$",
-};
-
+// Fonts, tokens and <html> only. The public site's chrome lives in (site)/layout.tsx and the
+// admin's in admin/layout.tsx, so neither inherits the other's header, footer or motion.
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -59,18 +46,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         {/* Adds the `js` class and decides, before first paint, whether the branded intro plays. */}
         <script dangerouslySetInnerHTML={{ __html: siteIntroScript }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }} />
       </head>
-      <body>
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
-        <SiteIntro />
-        <Header />
-        <main id="main">{children}</main>
-        <Footer />
-        <ScrollReveal />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
