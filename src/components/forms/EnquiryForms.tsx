@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Choices, Field, Honeypot, SubmitOutcome } from "@/components/forms/Fields";
 import { Icon } from "@/components/Icon";
+import { useSiteData } from "@/components/SiteData";
 import { submitEnquiry, type SubmitResult } from "@/lib/submit";
 import styles from "./forms.module.css";
 
@@ -38,6 +39,7 @@ function SubmitButton({ busy, label }: { busy: boolean; label: string }) {
 /* ---------- Contact ---------- */
 
 export function ContactForm() {
+  const { email: businessEmail } = useSiteData().business;
   const f = useForm({ first: "", last: "", phone: "", email: "", area: "", message: "", website: "" });
 
   const submit = async (e: React.FormEvent) => {
@@ -57,6 +59,7 @@ export function ContactForm() {
     const r = await submitEnquiry(
       { kind: "contact", name: `${v.first} ${v.last}`, email: v.email, phone: v.phone, summary, details: { area: v.area }, website: v.website },
       "Website enquiry",
+      businessEmail,
     );
     f.setBusy(false);
     if (r.status === "invalid") f.setErrors(Object.fromEntries(r.fields.map((x) => [x, "Please check this field."])));
@@ -93,6 +96,7 @@ const callTimes = [
 ];
 
 export function PartnerForm() {
+  const { email: businessEmail } = useSiteData().business;
   const f = useForm({
     first: "", last: "", street: "", street2: "", city: "", postal: "",
     preferred: "email", phone: "", email: "", time: "", comments: "", website: "",
@@ -134,6 +138,7 @@ export function PartnerForm() {
         website: v.website,
       },
       "Partnership request",
+      businessEmail,
     );
     f.setBusy(false);
     if (r.status === "invalid") f.setErrors(Object.fromEntries(r.fields.map((x) => [x, "Please check this field."])));

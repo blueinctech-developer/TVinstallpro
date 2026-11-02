@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireUser } from "@/lib/admin/auth";
-import { fmtDateTime, fmtMoney, serviceTitle } from "@/lib/admin/format";
+import { fmtDateTime, fmtMoney } from "@/lib/admin/format";
+import { serviceTitler } from "@/lib/site-data";
 import { listRequests, type RequestFilters } from "@/lib/admin/requests";
 import { isKind, isStatus, kinds, roleAtLeast, statusOrder, statuses, type Kind } from "@/lib/admin/vocab";
 import styles from "../../admin.module.css";
@@ -20,7 +21,7 @@ export default async function Requests({ searchParams }: { searchParams: Promise
     q: sp.q?.slice(0, 100) || undefined,
     page: Math.max(1, Number(sp.page) || 1),
   };
-  const { rows, total, page, pages } = await listRequests(f);
+  const [{ rows, total, page, pages }, serviceTitle] = await Promise.all([listRequests(f), serviceTitler()]);
   const keep = { kind: f.kind, status: f.status, q: f.q };
 
   return (

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Choices, Field, Honeypot, SubmitOutcome } from "@/components/forms/Fields";
 import { Icon } from "@/components/Icon";
 import { useSiteData } from "@/components/SiteData";
+import { servicePriceLabel } from "@/lib/site-defaults";
 import { emptyTvSelection, estimateLines, estimateTotal, money, type TvSelection } from "@/lib/pricing";
 import { submitEnquiry, type SubmitResult } from "@/lib/submit";
 import styles from "./BookingFlow.module.css";
@@ -154,6 +155,7 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
         website: honey,
       },
       `Booking request: ${svc?.title ?? "Service"}`,
+      site.email,
     );
     setBusy(false);
     if (r.status === "invalid") {
@@ -232,7 +234,7 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
                 id: s.slug,
                 label: s.title,
                 detail: s.short,
-                meta: s.estimator ? `From ${money(tvSizes[0].price)}` : "Quote",
+                meta: servicePriceLabel(s, prices),
               }))}
             />
           )}

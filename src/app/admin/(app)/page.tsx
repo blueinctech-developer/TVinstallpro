@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { requireUser } from "@/lib/admin/auth";
-import { fmtAgo, fmtDay, serviceTitle } from "@/lib/admin/format";
+import { fmtAgo, fmtDay } from "@/lib/admin/format";
+import { serviceTitler } from "@/lib/site-data";
 import { overview } from "@/lib/admin/requests";
 import { kinds, statusOrder, statuses, type Kind, type Status } from "@/lib/admin/vocab";
 import styles from "../admin.module.css";
@@ -13,7 +14,7 @@ export const metadata: Metadata = { title: "Overview" };
 export default async function Overview({ searchParams }: { searchParams: Promise<{ denied?: string }> }) {
   const user = await requireUser();
   const { denied } = await searchParams;
-  const { counts, recent, upcoming } = await overview();
+  const [{ counts, recent, upcoming }, serviceTitle] = await Promise.all([overview(), serviceTitler()]);
 
   const sum = (pred: (c: (typeof counts)[number]) => boolean) => counts.filter(pred).reduce((n, c) => n + c.n, 0);
   const by = (s: Status) => sum((c) => c.status === s);

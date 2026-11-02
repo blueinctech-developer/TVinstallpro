@@ -22,4 +22,11 @@ export const nav = [
   { href: "/contact", label: "Contact" },
 ] as const;
 
+/** The menu, plus optional sections once they have published content. */
+export const navWith = (links: { blog: boolean; work: boolean }): { href: string; label: string }[] => [
+  ...nav,
+  ...(links.work ? [{ href: "/our-work", label: "Our Work" }] : []),
+  ...(links.blog ? [{ href: "/blog", label: "Tips" }] : []),
+];
+
 export const bookHref = "/book";

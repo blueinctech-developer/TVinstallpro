@@ -29,7 +29,8 @@ Read-only: can look, can't change. Services & prices, Settings and Users are adm
 server as well as in the menu.
 
 **Editable site data:** the values in `src/lib/site.ts`, `content.ts` and `pricing.ts` are the defaults. Once
-someone saves in the admin, the saved values win. Public pages refresh straight away after a save, and at
+someone saves in the admin, the saved values win. New services (with an optional "from" price, icon and photo) and new or
+removed price options are saved the same way; once a price list is saved, the saved list replaces the default. Public pages refresh straight away after a save, and at
 most every 5 minutes otherwise. Customers' past estimates keep the prices they were given.
 
 **WordPress passwords:** imported users keep their old passwords (WordPress bcrypt `$wp$…`, phpass `$P$…`,

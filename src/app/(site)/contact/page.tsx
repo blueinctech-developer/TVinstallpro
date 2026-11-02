@@ -5,7 +5,6 @@ import { Faq } from "@/components/home/Faq";
 import { Icon } from "@/components/Icon";
 import { PageHero } from "@/components/page/PageHero";
 import page from "@/components/page/page.module.css";
-import { faqs } from "@/lib/content";
 import { getSiteData } from "@/lib/site-data";
 import type { SiteData } from "@/lib/site-defaults";
 import styles from "./contact.module.css";
@@ -75,7 +74,7 @@ export default async function ContactPage() {
           </div>
         </div>
       </section>
-      <Faq items={faqs.slice(0, 6)} title="Before you ask." />
+      <Faq limit={6} title="Before you ask." />
     </>
   );
 }

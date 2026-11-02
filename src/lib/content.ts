@@ -15,8 +15,14 @@ export type Service = {
   image: string;
   /** TV mounting has an itemised estimator; everything else is quoted on request */
   estimator?: boolean;
-  /** old WordPress booking URL, redirected to /book?service=<slug> */
+  /** old WordPress booking URL, redirected to /book?service=<slug> (empty for services added in the admin) */
   legacyPath: string;
+  /** optional "From $…" price set in the admin; without it the service shows as quoted on request */
+  priceFrom?: number;
+  /** added in the admin rather than in this file */
+  custom?: boolean;
+  /** kept, but not shown on the website */
+  hidden?: boolean;
 };
 
 export const services: Service[] = [
@@ -152,7 +158,7 @@ export const work = [
 ];
 
 // FAQs answered only with information published on the live site.
-export const faqs = [
+export const faqsFor = (b: { warrantyMonths: number; componentsIncluded: number }) => [
   {
     q: "How much does TV mounting cost?",
     a: "Mounting starts at $60.99 for TVs up to 31″ and goes up by TV size. Mounts, wall type, cable concealment and extras are itemised in our instant estimate on the booking page. The technician confirms the final price.",
@@ -171,11 +177,11 @@ export const faqs = [
   },
   {
     q: "Is the work guaranteed?",
-    a: `Installation work is covered by a ${site.warrantyMonths}-month warranty, and extended maintenance plans of one or two years are available.`,
+    a: `Installation work is covered by a ${b.warrantyMonths}-month warranty, and extended maintenance plans of one or two years are available.`,
   },
   {
     q: "What's included in a standard installation?",
-    a: `Mounting and securing your TV, connecting up to ${site.componentsIncluded} existing components, and testing everything before we leave.`,
+    a: `Mounting and securing your TV, connecting up to ${b.componentsIncluded} existing components, and testing everything before we leave.`,
   },
   {
     q: "Do you offer same-day installation?",

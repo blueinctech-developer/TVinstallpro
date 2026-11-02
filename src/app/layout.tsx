@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Jura, Manrope } from "next/font/google";
 import { siteIntroScript } from "@/components/intro/introState";
+import { getSiteData } from "@/lib/site-data";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -13,23 +14,27 @@ const manrope = Manrope({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
-  title: {
-    default: `${site.name} | TV Mounting & Installation in Ottawa & Gatineau`,
-    template: `%s | ${site.name}`,
-  },
-  description: site.description,
-  openGraph: {
-    type: "website",
-    locale: "en_CA",
-    siteName: site.name,
-    url: site.url,
-    title: `${site.name} | TV Mounting & Installation in Ottawa & Gatineau`,
-    description: site.description,
-  },
-  alternates: { canonical: "/" },
-};
+// Name and description come from Admin → Settings → Business.
+export async function generateMetadata(): Promise<Metadata> {
+  const { name, description } = (await getSiteData()).business;
+  return {
+    metadataBase: new URL(site.url),
+    title: {
+      default: `${name} | TV Mounting & Installation in Ottawa & Gatineau`,
+      template: `%s | ${name}`,
+    },
+    description,
+    openGraph: {
+      type: "website",
+      locale: "en_CA",
+      siteName: name,
+      url: site.url,
+      title: `${name} | TV Mounting & Installation in Ottawa & Gatineau`,
+      description,
+    },
+    alternates: { canonical: "/" },
+  };
+}
 
 export const viewport: Viewport = { themeColor: "#ffffff" };
 

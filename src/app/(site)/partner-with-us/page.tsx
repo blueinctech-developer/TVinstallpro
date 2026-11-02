@@ -2,14 +2,17 @@ import type { Metadata } from "next";
 import { PartnerForm } from "@/components/forms/EnquiryForms";
 import { PageHero } from "@/components/page/PageHero";
 import page from "@/components/page/page.module.css";
-import { site } from "@/lib/site";
+import { getSiteData } from "@/lib/site-data";
 import styles from "../contact/contact.module.css";
 
-export const metadata: Metadata = {
-  title: "Partner With Us",
-  description: `Send ${site.name} a partnership request: complete installations, from TVs to sound and gaming systems.`,
-  alternates: { canonical: "/partner-with-us" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = (await getSiteData()).business;
+  return {
+    title: "Partner With Us",
+    description: `Send ${site.name} a partnership request: complete installations, from TVs to sound and gaming systems.`,
+    alternates: { canonical: "/partner-with-us" },
+  };
+}
 
 const steps = [
   { n: "01", title: "Send your request", text: "Tell us who you are and what you have in mind." },
@@ -17,7 +20,8 @@ const steps = [
   { n: "03", title: "We plan the work", text: "Together, from a single install to a complete entertainment system." },
 ];
 
-export default function PartnerPage() {
+export default async function PartnerPage() {
+  const site = (await getSiteData()).business;
   return (
     <>
       <PageHero

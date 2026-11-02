@@ -6,7 +6,7 @@ import { Icon } from "@/components/Icon";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 import { SectionHead } from "@/components/page/SectionHead";
 import { useSiteData } from "@/components/SiteData";
-import { money, tvFromOf } from "@/lib/pricing";
+import { countWord, servicePriceLabel } from "@/lib/site-defaults";
 import styles from "./ServicesFan.module.css";
 
 /**
@@ -17,7 +17,6 @@ import styles from "./ServicesFan.module.css";
 export function ServicesFan() {
   const { services, prices } = useSiteData();
   const FAN = services; // every published service
-  const tvFrom = tvFromOf(prices);
   const ref = useScrollProgress<HTMLDivElement>("through");
 
   return (
@@ -26,7 +25,7 @@ export function ServicesFan() {
         <SectionHead
           id="services-title"
           title="Every wall. Every screen."
-          lead="Nine installation services from one team. TV mounting has an instant estimate; everything else is quoted on request."
+          lead={`${countWord(services.length)} installation services from one team. TV mounting has an instant estimate; tell us about anything else and we'll quote it.`}
           action={
             <Link href="/services" className="link">
               Full services &amp; pricing <Icon name="arrow" size={16} />
@@ -63,7 +62,7 @@ export function ServicesFan() {
                   <span className={styles.itemTitle}>{s.title}</span>
                   <span className={styles.itemShort}>{s.short}</span>
                 </span>
-                <span className={styles.itemPrice}>{s.estimator ? `From ${money(tvFrom)}` : "Quote"}</span>
+                <span className={styles.itemPrice}>{servicePriceLabel(s, prices)}</span>
                 <Icon name="arrow" size={18} className={styles.itemArrow} />
               </Link>
             </li>
