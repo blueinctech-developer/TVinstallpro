@@ -9,6 +9,7 @@ import page from "@/components/page/page.module.css";
 import { otherServices, services as defaultServices } from "@/lib/content";
 import { money, tvFromOf, type Choice } from "@/lib/pricing";
 import { getSiteData } from "@/lib/site-data";
+import { countWord } from "@/lib/site-defaults";
 import styles from "./services.module.css";
 
 export const metadata: Metadata = {
@@ -39,7 +40,7 @@ export default async function ServicesPage() {
         crumb="Services & Pricing"
         title="Services"
         ghost="& pricing."
-        lead="Itemised TV-mounting prices you can check before we arrive, and eight more installation services quoted on request."
+        lead={`Itemised TV-mounting prices you can check before we arrive, and ${countWord(rest.length).toLowerCase()} more installation services.`}
         tone="dark"
         strip={
           <dl className={styles.strip}>
@@ -127,7 +128,7 @@ export default async function ServicesPage() {
           <SectionHead
             id="more-title"
             title="Beyond the TV."
-            lead="Eight more installation services, each quoted on request. Tell us about the job and we'll come back with a price."
+            lead={`${countWord(rest.length)} more installation services. Tell us about the job and we'll come back with a price.`}
           />
           <div className={styles.rows}>
             {rest.map((s, i) => (
@@ -141,7 +142,7 @@ export default async function ServicesPage() {
                   </span>
                   <h3>{s.title}</h3>
                   <p>{s.body}</p>
-                  <p className={styles.quote}>Quoted on request</p>
+                  <p className={styles.quote}>{s.priceFrom ? `From ${money(s.priceFrom)}` : "Quoted on request"}</p>
                   <Link href={`/book?service=${s.slug}`} className="link">
                     Request a quote <Icon name="arrow" size={16} />
                   </Link>

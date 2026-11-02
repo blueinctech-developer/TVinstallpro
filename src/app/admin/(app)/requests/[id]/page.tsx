@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/Icon";
 import { requireUser } from "@/lib/admin/auth";
-import { fmtDateTime, fmtDay, fmtMoney, serviceTitle, telHref, waHref } from "@/lib/admin/format";
+import { fmtDateTime, fmtDay, fmtMoney, telHref, waHref } from "@/lib/admin/format";
+import { serviceTitler } from "@/lib/site-data";
 import { getRequest, markSeen, type EventRow } from "@/lib/admin/requests";
 import { roleAtLeast, statuses } from "@/lib/admin/vocab";
 import styles from "../../../admin.module.css";
@@ -46,7 +47,7 @@ export default async function RequestPage({ params }: { params: Promise<{ id: st
   const user = await requireUser();
   const id = Number((await params).id);
   if (!Number.isInteger(id) || id < 1) notFound();
-  const data = await getRequest(id);
+  const [data, serviceTitle] = await Promise.all([getRequest(id), serviceTitler()]);
   if (!data) notFound();
   const { req: r, events, related } = data;
   if (!r.seen_at) await markSeen(r.id);

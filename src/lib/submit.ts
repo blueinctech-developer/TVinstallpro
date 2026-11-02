@@ -1,5 +1,3 @@
-import { site } from "./site";
-
 export type SubmitResult =
   | { status: "sent" }
   | { status: "not-delivered"; mailto: string } // backend not connected or delivery failed
@@ -16,12 +14,12 @@ export type Enquiry = {
   website?: string; // honeypot
 };
 
-export const mailtoFor = (subject: string, body: string) =>
-  `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+export const mailtoFor = (to: string, subject: string, body: string) =>
+  `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
 /** Sends an enquiry to /api/enquiry. Never reports success unless the server confirms delivery. */
-export async function submitEnquiry(e: Enquiry, subject: string): Promise<SubmitResult> {
-  const fallback = { status: "not-delivered" as const, mailto: mailtoFor(subject, e.summary) };
+export async function submitEnquiry(e: Enquiry, subject: string, businessEmail: string): Promise<SubmitResult> {
+  const fallback = { status: "not-delivered" as const, mailto: mailtoFor(businessEmail, subject, e.summary) };
   try {
     const res = await fetch("/api/enquiry", {
       method: "POST",

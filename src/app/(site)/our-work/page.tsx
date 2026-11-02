@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHero } from "@/components/page/PageHero";
 import page from "@/components/page/page.module.css";
-import { serviceTitle } from "@/lib/admin/format";
 import { publishedPortfolio } from "@/lib/public-content";
+import { serviceTitler } from "@/lib/site-data";
 import styles from "../blog/blog.module.css";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function OurWork() {
-  const projects = await publishedPortfolio();
+  const [projects, serviceTitle] = await Promise.all([publishedPortfolio(), serviceTitler()]);
   // Nothing published yet: no empty page for visitors or search engines.
   if (!projects.length) notFound();
   return (

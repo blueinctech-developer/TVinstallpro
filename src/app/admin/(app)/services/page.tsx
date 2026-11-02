@@ -1,21 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import type { IconName } from "@/components/Icon";
 import { requireUser } from "@/lib/admin/auth";
-import { services as defaultServices } from "@/lib/content";
-import { getSetting, getSiteData } from "@/lib/site-data";
-import { mergeServices, type ServiceEdit } from "@/lib/site-defaults";
+import { listMedia } from "@/lib/media";
+import { getAllServices, getSiteData } from "@/lib/site-data";
 import styles from "../../admin.module.css";
 import { PricesForm, ServicesForm } from "./forms";
 
 export const metadata: Metadata = { title: "Services & prices" };
 
+// Line icons that suit a service; the built-in nine use the same set.
+const icons: IconName[] = ["tools", "tv", "fireplace", "projector", "frame", "appliance", "blinds", "shelf", "gazebo", "wallpaper", "speaker", "wifi", "network", "shield", "truck", "pin"];
+
 export default async function ServicesAdmin({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   await requireUser("admin");
   const tab = (await searchParams).tab === "services" ? "services" : "prices";
-  const [{ prices }, edits] = await Promise.all([getSiteData(), getSetting<ServiceEdit[]>("services")]);
-  // Show every service, including hidden ones, with their saved wording.
-  const all = defaultServices.map((d) => mergeServices([{ ...(edits?.find((e) => e.slug === d.slug) ?? { slug: d.slug }), hidden: false }]).find((s) => s.slug === d.slug)!);
-  const hidden = (edits ?? []).filter((e) => e.hidden).map((e) => e.slug);
+  const [{ prices }, services, media] = await Promise.all([getSiteData(), getAllServices(), listMedia()]);
 
   return (
     <>
@@ -25,7 +25,7 @@ export default async function ServicesAdmin({ searchParams }: { searchParams: Pr
             Services <span className="ghost">&amp; prices</span>
           </h1>
           <p className={styles.sub}>
-            What the website and the booking estimator show. Customers&apos; past estimates keep the prices they were given.
+            What the website and the booking form show. Requests already received keep the prices they were given.
           </p>
         </div>
         <Link href="/services" target="_blank" className={`btn btn--ghost ${styles.btnSm}`}>
@@ -37,10 +37,16 @@ export default async function ServicesAdmin({ searchParams }: { searchParams: Pr
           TV mounting prices
         </Link>
         <Link href="/admin/services?tab=services" className={styles.tab} aria-current={tab === "services" ? "page" : undefined}>
-          Services
+          Services ({services.length})
         </Link>
       </nav>
-      <div style={{ maxWidth: 900 }}>{tab === "prices" ? <PricesForm p={prices} /> : <ServicesForm services={all} hidden={hidden} />}</div>
+      <div style={{ maxWidth: 900 }}>
+        {tab === "prices" ? (
+          <PricesForm p={prices} />
+        ) : (
+          <ServicesForm services={services} icons={icons} media={media.map((m) => ({ id: m.id, url: m.url, alt: m.alt, filename: m.filename }))} />
+        )}
+      </div>
     </>
   );
 }

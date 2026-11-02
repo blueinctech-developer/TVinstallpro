@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { db } from "@/lib/db";
 import {
+  allServices,
   buildSiteData,
   defaultEmail,
   defaultTracking,
@@ -37,13 +38,37 @@ export async function saveSetting(key: string, value: unknown, userId: number) {
 
 /** Business details, services and prices for the public site. Cached per request. */
 export const getSiteData = cache(async (): Promise<SiteData> => {
-  const [business, prices, services] = await Promise.all([
+  const [business, prices, services, links] = await Promise.all([
     getSetting<Partial<Business>>("business"),
     getSetting<Partial<PriceBook>>("prices"),
     getSetting<ServiceEdit[]>("services"),
+    publishedLinks(),
   ]);
-  return buildSiteData(business, prices, services);
+  return buildSiteData(business, prices, services, links);
 });
+
+/** Blog and Our work join the menu and sitemap only once something is published. */
+async function publishedLinks(): Promise<SiteData["links"]> {
+  if (process.env.NEXT_PHASE === "phase-production-build" && !process.env.DATABASE_URL) return { blog: false, work: false };
+  try {
+    const [r] = await (await db()).query<{ blog: boolean; work: boolean }>(
+      `select exists(select 1 from posts where status = 'published') as blog,
+              exists(select 1 from portfolio where status = 'published') as work`,
+    );
+    return r;
+  } catch {
+    return { blog: false, work: false };
+  }
+}
+
+/** All services including hidden ones, for the admin (a past request may name a service that's now hidden). */
+export const getAllServices = cache(async () => allServices(await getSetting<ServiceEdit[]>("services")));
+
+/** title(slug) for admin lists, using saved names. Slugs no longer known fall back to the slug. */
+export async function serviceTitler() {
+  const list = await getAllServices();
+  return (slug: string | null) => (slug ? (list.find((s) => s.slug === slug)?.title ?? slug) : null);
+}
 
 export const getTracking = cache(async (): Promise<Tracking> => ({ ...defaultTracking, ...((await getSetting<Partial<Tracking>>("tracking")) ?? {}) }));
 

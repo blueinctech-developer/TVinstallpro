@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@/components/Icon";
 import { requireUser } from "@/lib/admin/auth";
-import { fmtDate, fmtDateTime, fmtMoney, serviceTitle, telHref } from "@/lib/admin/format";
+import { fmtDate, fmtDateTime, fmtMoney, telHref } from "@/lib/admin/format";
+import { serviceTitler } from "@/lib/site-data";
 import { getCustomer } from "@/lib/admin/requests";
 import styles from "../../../admin.module.css";
 import { StatusBadge, kindLabel } from "../../../ui";
@@ -14,7 +15,7 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
   await requireUser();
   const id = Number((await params).id);
   if (!Number.isInteger(id) || id < 1) notFound();
-  const data = await getCustomer(id);
+  const [data, serviceTitle] = await Promise.all([getCustomer(id), serviceTitler()]);
   if (!data) notFound();
   const { customer: c, requests, similar } = data;
 

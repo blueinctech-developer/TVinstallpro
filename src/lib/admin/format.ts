@@ -1,5 +1,3 @@
-import { services } from "@/lib/content";
-
 // The business is in Ottawa/Gatineau: show every time in Eastern time, whatever the server's zone.
 const TZ = "America/Toronto";
 
@@ -22,8 +20,6 @@ export function fmtAgo(d: Date | string) {
   const days = Math.round(hours / 24);
   return days < 31 ? `${days} d ago` : fmtDate(d);
 }
-
-export const serviceTitle = (slug: string | null) => (slug ? (services.find((s) => s.slug === slug)?.title ?? slug) : null);
 
 export const telHref = (phone: string) => `tel:+1${phone.replace(/\D/g, "").slice(-10)}`;
 export const waHref = (phone: string) => `https://wa.me/1${phone.replace(/\D/g, "").slice(-10)}`;

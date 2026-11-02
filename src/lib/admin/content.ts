@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "@/lib/db";
-import { services } from "@/lib/content";
+import { getAllServices } from "@/lib/site-data";
 import { collections, slugify, type CollectionKey, type Field } from "./collections";
 
 /*
@@ -20,7 +20,7 @@ export async function getItem(type: CollectionKey, id: number) {
   return row ?? null;
 }
 
-function parse(f: Field, form: FormData): { value?: unknown; error?: string } {
+function parse(f: Field, form: FormData, serviceSlugs: string[]): { value?: unknown; error?: string } {
   const raw = form.get(f.name);
   const s = String(raw ?? "").trim();
   switch (f.type) {
@@ -40,7 +40,7 @@ function parse(f: Field, form: FormData): { value?: unknown; error?: string } {
     case "images":
       return { value: form.getAll(f.name).map(Number).filter(Number.isInteger) };
     case "service":
-      return { value: services.some((x) => x.slug === s) ? s : null };
+      return { value: serviceSlugs.includes(s) ? s : null };
     case "slug":
       return { value: slugify(s) };
     default:
@@ -54,8 +54,9 @@ function parse(f: Field, form: FormData): { value?: unknown; error?: string } {
 export async function saveItem(type: CollectionKey, id: number | null, form: FormData, userId: number) {
   const c = collections[type];
   const values: Record<string, unknown> = {};
+  const serviceSlugs = (await getAllServices()).map((s) => s.slug);
   for (const f of c.fields) {
-    const r = parse(f, form);
+    const r = parse(f, form, serviceSlugs);
     if (r.error) return { error: r.error };
     values[f.name] = r.value;
   }

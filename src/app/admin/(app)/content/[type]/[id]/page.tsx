@@ -6,7 +6,7 @@ import { requireUser } from "@/lib/admin/auth";
 import { collections, isCollection } from "@/lib/admin/collections";
 import { getItem } from "@/lib/admin/content";
 import { roleAtLeast } from "@/lib/admin/vocab";
-import { services } from "@/lib/content";
+import { getAllServices } from "@/lib/site-data";
 import { listMedia } from "@/lib/media";
 import styles from "../../../../admin.module.css";
 import { deleteContent } from "../../actions";
@@ -28,6 +28,7 @@ export default async function EditContent({
   const isNew = id === "new";
   const row = isNew ? null : await getItem(type, Number(id));
   if (!isNew && !row) notFound();
+  const services = await getAllServices();
   const media = (await listMedia()).map((m) => ({ id: m.id, url: m.url, alt: m.alt, filename: m.filename }));
   const canEdit = roleAtLeast(user.role, "staff");
   const { saved } = await searchParams;

@@ -1,11 +1,12 @@
 import { SectionHead } from "@/components/page/SectionHead";
-import { faqs } from "@/lib/content";
+import { faqsFor } from "@/lib/content";
 import { getSiteData } from "@/lib/site-data";
 import styles from "./Faq.module.css";
 
 /** Native <details> accordion: keyboard and screen-reader friendly with no JS; CSS animates the open. */
-export async function Faq({ items = faqs, title = "Questions, answered." }: { items?: typeof faqs; title?: string }) {
+export async function Faq({ limit, title = "Questions, answered." }: { limit?: number; title?: string }) {
   const site = (await getSiteData()).business;
+  const items = faqsFor(site).slice(0, limit);
   return (
     <section className="section" aria-labelledby="faq-title">
       <div className="wrap">
