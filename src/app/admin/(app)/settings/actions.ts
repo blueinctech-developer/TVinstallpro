@@ -61,13 +61,16 @@ export async function saveTracking(_: SettingsResult, f: FormData): Promise<Sett
 
 export async function saveEmail(_: SettingsResult, f: FormData): Promise<SettingsResult> {
   const me = await requireUser("admin");
-  const list = text(f, "alertsTo", 1000)
-    .split(/[,;\s]+/)
-    .filter(Boolean);
-  const bad = list.find((x) => !emailOk(x));
+  const split = (k: string) => text(f, k, 1000).split(/[,;\s]+/).filter(Boolean);
+  const list = split("alertsTo");
+  const partners = split("partnerAlertsTo");
+  const replyTo = text(f, "replyTo", 200).toLowerCase();
+  const bad = [...list, ...partners, ...(replyTo ? [replyTo] : [])].find((x) => !emailOk(x));
   if (bad) return { error: `"${bad}" isn't a valid email address.` };
   const e: EmailSettings = {
     alertsTo: list.join(", "),
+    partnerAlertsTo: partners.join(", "),
+    replyTo,
     fromName: text(f, "fromName", 80),
     fromEmail: text(f, "fromEmail", 200).toLowerCase(),
     confirmToCustomer: f.get("confirmToCustomer") === "on",

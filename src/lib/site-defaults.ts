@@ -32,7 +32,9 @@ export type ServiceEdit = {
 export type Tracking = { ga4Id: string; gtmId: string; headCode: string; bodyCode: string };
 
 export type EmailSettings = {
-  alertsTo: string; // comma-separated
+  alertsTo: string; // comma-separated: bookings and contact messages
+  partnerAlertsTo: string; // comma-separated: partner requests (empty = same as alertsTo)
+  replyTo: string; // where customers' replies go
   fromName: string;
   fromEmail: string;
   confirmToCustomer: boolean;
@@ -61,6 +63,8 @@ export const defaultTracking: Tracking = { ga4Id: "", gtmId: "", headCode: "", b
 
 export const defaultEmail: EmailSettings = {
   alertsTo: "",
+  partnerAlertsTo: "",
+  replyTo: "",
   fromName: site.name,
   fromEmail: "support@tvinstallpro.ca",
   confirmToCustomer: false,

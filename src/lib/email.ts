@@ -83,7 +83,8 @@ export async function sendRequestEmails(r: {
   origin: string;
 }) {
   const s = await getEmailSettings();
-  const to = s.alertsTo
+  // Routing matches the old site: partner requests can go to their own address.
+  const to = (r.kind === "partner" && s.partnerAlertsTo ? s.partnerAlertsTo : s.alertsTo)
     .split(/[,;\s]+/)
     .map((x) => x.trim())
     .filter((x) => x.includes("@"));
@@ -97,10 +98,12 @@ export async function sendRequestEmails(r: {
       requestId: r.id,
     });
   }
-  if (s.confirmToCustomer && r.email) {
+  // Bookings and partner requests get a copy; the old contact form never sent one.
+  if (s.confirmToCustomer && r.email && r.kind !== "contact") {
     await sendMail({
       to: r.email,
       subject: `We received your request – ${s.fromName}`,
+      replyTo: s.replyTo || undefined,
       text: `Hi ${r.name.split(" ")[0]},\n\nThanks for contacting ${s.fromName}. We've received your request and will get back to you soon to confirm the details. This isn't a confirmed appointment yet.\n\nWhat you sent:\n\n${r.summary}\n\n${s.fromName}`,
       requestId: r.id,
     });
