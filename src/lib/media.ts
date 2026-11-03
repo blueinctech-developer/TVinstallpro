@@ -9,7 +9,11 @@ import { db } from "@/lib/db";
  * Files are public URLs; the media table keeps the list, alt text and source.
  */
 
-export const blobConfigured = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+// Vercel names the variable after the prefix chosen when the store was connected (BLOB_ by default;
+// this project's store was connected as "blob_"), so accept either spelling.
+const storeId = () => process.env.BLOB_STORE_ID || process.env.blob_STORE_ID || undefined;
+
+export const blobConfigured = () => !!(process.env.BLOB_READ_WRITE_TOKEN || storeId());
 
 // Images only. SVG is excluded: it can carry scripts.
 export const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
@@ -40,7 +44,7 @@ export async function storeFile(
   if (!blobConfigured()) throw new Error("Media storage isn't connected yet (BLOB_READ_WRITE_TOKEN is missing).");
   if (!allowedTypes.includes(file.type)) throw new Error(`${file.name}: only JPG, PNG, WebP, GIF and AVIF images can be uploaded.`);
   if (file.size > maxBytes) throw new Error(`${file.name} is larger than 4 MB.`);
-  const blob = await put(`media/${safeName(file.name)}`, file.body, { access: "public", contentType: file.type, addRandomSuffix: true });
+  const blob = await put(`media/${safeName(file.name)}`, file.body, { access: "public", contentType: file.type, addRandomSuffix: true, storeId: storeId() });
   const [row] = await (await db()).query<MediaRow>(
     `insert into media (url, pathname, filename, content_type, size, alt, source, legacy_url, created_by)
      values ($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *`,
@@ -60,5 +64,5 @@ export async function deleteMedia(id: number) {
   // Detach from portfolio items first; posts and team photos are detached by the foreign key.
   await conn.query("update portfolio set media_ids = array_remove(media_ids, $1)", [id]);
   await conn.query("delete from media where id = $1", [id]);
-  if (blobConfigured()) await del(m.url).catch((e) => console.error("[media] blob delete failed:", e));
+  if (blobConfigured()) await del(m.url, { storeId: storeId() }).catch((e) => console.error("[media] blob delete failed:", e));
 }
