@@ -232,4 +232,15 @@ export const migrations: Migration[] = [
       create index email_log_created on email_log(created_at desc);
     `,
   },
+  {
+    version: 3,
+    name: "unwrap JSON stored as strings",
+    // postgres.js used to JSON-encode values that were already JSON, so objects were stored as
+    // JSON strings (see connectPostgres). Unwraps them once; rows already correct are untouched.
+    sql: `
+      update settings set value = (value #>> '{}')::jsonb where jsonb_typeof(value) = 'string';
+      update requests set details = (details #>> '{}')::jsonb where jsonb_typeof(details) = 'string';
+      update activity_log set meta = (meta #>> '{}')::jsonb where jsonb_typeof(meta) = 'string';
+    `,
+  },
 ];
