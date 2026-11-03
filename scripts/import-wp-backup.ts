@@ -10,7 +10,7 @@
  * (matched by WordPress id). Theme pages, demo "services" and client logos aren't imported: the
  * new site's pages and services are built differently. Stop `npm run dev` first if using the local database.
  */
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { gunzipSync } from "node:zlib";
 import TurndownService from "turndown";
@@ -116,7 +116,13 @@ const usermeta = rowsOf(T("usermeta"));
 const posts = rowsOf(T("posts"));
 const postmeta = rowsOf(T("postmeta"));
 const comments = rowsOf(T("comments"));
-const meta = (postId: string, key: string) => postmeta.find((m) => m.post_id === postId && m.meta_key === key)?.meta_value ?? null;
+// Indexed: large sites have hundreds of thousands of postmeta rows.
+const metaIndex = new Map<string, string | null>();
+for (const m of postmeta) {
+  const k = `${m.post_id}|${m.meta_key}`;
+  if (!metaIndex.has(k)) metaIndex.set(k, m.meta_value);
+}
+const meta = (postId: string, key: string) => metaIndex.get(`${postId}|${key}`) ?? null;
 const gmt = (d: string | null) => (d && !d.startsWith("0000") ? new Date(`${d.replace(" ", "T")}Z`) : new Date());
 console.log(`Read ${users.length} users, ${posts.length} posts/pages/attachments, ${comments.length} comments (table prefix "${prefix}").`);
 
@@ -171,9 +177,13 @@ for (const a of attachments) {
     continue;
   }
   // Locally: BLOB_READ_WRITE_TOKEN, or BLOB_STORE_ID + VERCEL_OIDC_TOKEN from `vercel env pull`.
-  if (!process.env.BLOB_READ_WRITE_TOKEN && !(process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN)) {
+  if (!dryRun && !process.env.BLOB_READ_WRITE_TOKEN && !(process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN)) {
     rep("media").notes.push("No Blob credentials (BLOB_READ_WRITE_TOKEN, or BLOB_STORE_ID + VERCEL_OIDC_TOKEN): media not uploaded");
     break;
+  }
+  if (statSync(file).size > 4 * 1024 * 1024) {
+    rep("media").notes.push(`${rel}: over 4 MB, skipped`);
+    continue;
   }
   if (dryRun) {
     rep("media").imported++;
