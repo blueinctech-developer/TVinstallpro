@@ -53,8 +53,9 @@ export async function storeFile(
   return row;
 }
 
-export async function listMedia(limit = 300) {
-  return (await db()).query<MediaRow>("select * from media order by created_at desc, id desc limit $1", [limit]);
+// The whole library: a few hundred rows, and the admin grids load thumbnails lazily.
+export async function listMedia() {
+  return (await db()).query<MediaRow>("select * from media order by created_at desc, id desc");
 }
 
 export async function deleteMedia(id: number) {
