@@ -24,7 +24,15 @@ export const localDataDir = process.env.PGLITE_DIR || ".data/pglite";
 
 async function connectPostgres(url: string): Promise<Db> {
   const { default: postgres } = await import("postgres");
-  const sql = postgres(url, { max: 5, onnotice: () => {} });
+  // Queries pass JSON already stringified. The driver would stringify it again and store a JSON
+  // string instead of an object, so strings go through untouched. PGlite doesn't have this quirk.
+  const json = {
+    to: 114,
+    from: [114, 3802],
+    serialize: (x: unknown) => (typeof x === "string" ? x : JSON.stringify(x)),
+    parse: (x: string) => JSON.parse(x),
+  };
+  const sql = postgres(url, { max: 5, onnotice: () => {}, types: { json } });
   type Conn = { unsafe: (text: string, params?: never[]) => Promise<unknown> };
   const wrap = (conn: Conn): Omit<Db, "transaction" | "close"> => ({
     query: async <T,>(text: string, params: unknown[] = []) => [...((await conn.unsafe(text, params as never[])) as T[])],
