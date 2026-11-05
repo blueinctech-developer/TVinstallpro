@@ -5,7 +5,7 @@ import styles from "@/components/page/page.module.css";
 
 export const metadata: Metadata = {
   title: "Book a Service",
-  description: "Book TV mounting or any home installation. Get an instant, itemised TV-mounting estimate and send your request in minutes.",
+  description: "Book TV mounting or any home installation in a few quick steps. See your TV-mounting estimate before you send, and we'll confirm a time.",
   alternates: { canonical: "/book" },
 };
 
@@ -18,7 +18,7 @@ export default async function BookPage({ searchParams }: { searchParams: Promise
         crumb="Book a Service"
         title="Book a"
         ghost="service."
-        lead="Build an itemised TV-mounting estimate, or request a quote for any other installation. We'll contact you to confirm a time."
+        lead="A few quick questions, about two minutes. We'll contact you to confirm a time."
       />
       <section className={styles.section}>
         <div className="wrap">

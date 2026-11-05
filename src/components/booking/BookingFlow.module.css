@@ -7,58 +7,105 @@
 
 .main {
   grid-column: 1 / span 7;
+  min-width: 0;
   scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+/* ---------- Top bar ---------- */
+
+.top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+  min-height: 44px;
+  margin-bottom: 28px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.back:hover {
+  color: var(--brand-text);
+}
+
+.back:focus-visible {
+  outline: 2px solid var(--brand-strong);
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
 .progress {
   position: relative;
-  height: 2px;
-  margin-bottom: 20px;
+  height: 4px;
+  border-radius: 4px;
   background: var(--line);
-  border-radius: 2px;
   overflow: hidden;
 }
 
 .progress span {
   position: absolute;
   inset: 0;
+  border-radius: inherit;
   background: var(--brand-strong);
   transform-origin: left;
   transition: transform 0.6s var(--ease-out);
 }
 
-.stepCount {
-  color: var(--muted);
-  font-size: var(--step--1);
-  font-weight: 600;
-}
-
-.stepTitle {
-  margin: 6px 0 28px;
-  font-size: var(--step-3);
-}
-
-.stepTitle:focus {
-  outline: none;
-}
-
-.errorSummary {
-  display: flex;
+/* Phones: the chosen service, since the side panel sits below the form. */
+.chip {
+  display: none;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 20px;
-  padding: 12px 16px;
-  border-radius: var(--radius-field);
-  background: #fdecea;
-  color: #8c1d16;
-  font-weight: 600;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 8px 12px 8px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: #fff;
+  font-weight: 700;
+  color: var(--ink);
 }
 
-/* Steps slide in from the direction of travel. */
+.chipImage {
+  position: relative;
+  flex: none;
+  width: 48px;
+  height: 36px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.chipImage img {
+  object-fit: cover;
+}
+
+.chipChange {
+  margin-left: auto;
+  min-height: 36px;
+  border: 0;
+  background: none;
+  color: var(--brand-text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---------- The question ---------- */
+
 .step {
-  display: grid;
-  gap: 32px;
-  animation: step-in 0.55s var(--ease-out) both;
+  animation: step-in 0.5s var(--ease-out) both;
 }
 
 .step[data-dir="back"] {
@@ -68,15 +115,47 @@
 @keyframes step-in {
   from {
     opacity: 0;
-    transform: translateX(28px);
+    transform: translateY(14px);
   }
 }
 
 @keyframes step-back {
   from {
     opacity: 0;
-    transform: translateX(-28px);
+    transform: translateY(-14px);
   }
+}
+
+.question {
+  font-size: var(--step-3);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.question:focus {
+  outline: none;
+}
+
+.help {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: var(--step-1);
+}
+
+.body {
+  margin-top: 32px;
+}
+
+.errorSummary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 12px 16px;
+  border-radius: var(--radius-field);
+  background: #fdecea;
+  color: #8c1d16;
+  font-weight: 600;
 }
 
 .fields {
@@ -89,12 +168,16 @@
   grid-column: 1 / -1;
 }
 
+.fieldLabel {
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
 .nav {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding-top: 24px;
-  border-top: 1px solid var(--line);
+  justify-content: flex-end;
+  margin-top: 32px;
 }
 
 .nav button[disabled] {
@@ -102,39 +185,132 @@
   cursor: progress;
 }
 
-/* Review */
+/* ---------- Review ---------- */
 
-.review dl {
+.review {
+  display: grid;
+  gap: 28px;
+}
+
+.estimate {
+  padding: 28px;
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+}
+
+.estimateLabel {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.estimateTotal {
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+}
+
+.estimateNote {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.toConfirmLabel {
+  margin-top: 16px;
+  color: var(--ink);
+  font-size: var(--step--1);
+  font-weight: 700;
+}
+
+.toConfirm {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 0 0 0 18px;
+  color: var(--muted);
+  font-size: var(--step--1);
+}
+
+.breakdownToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--brand-text);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.breakdownToggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.breakdown {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 16px 0 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+  font-size: var(--step--1);
+  animation: step-in 0.35s var(--ease-out) both;
+}
+
+.breakdown li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.breakdown li span:last-child {
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.answers {
   margin: 0;
   border-top: 1px solid var(--line);
 }
 
-.review dl > div {
+.answers > div {
   display: grid;
-  grid-template-columns: 140px minmax(0, 1fr) auto;
+  grid-template-columns: 170px minmax(0, 1fr) auto;
+  align-items: baseline;
   gap: 16px;
-  padding: 18px 0;
+  padding: 14px 0;
   border-bottom: 1px solid var(--line);
 }
 
-.review dt {
+.answers dt {
   font-weight: 700;
   color: var(--ink);
 }
 
-.review dd {
+.answers dd {
   margin: 0;
   color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .edit {
+  min-height: 32px;
+  padding: 0;
   border: 0;
   background: none;
   color: var(--brand-text);
+  font: inherit;
   font-weight: 700;
   cursor: pointer;
-  padding: 0;
-  align-self: start;
 }
 
 .edit:hover {
@@ -142,15 +318,11 @@
 }
 
 .disclaimer {
-  margin-top: 20px;
-  padding: 16px 18px;
-  border-radius: var(--radius-field);
-  background: var(--surface);
   color: var(--muted);
   font-size: var(--step--1);
 }
 
-/* Live estimate */
+/* ---------- Side panel: picture on top of the dark box ---------- */
 
 .summary {
   grid-column: 9 / span 4;
@@ -158,7 +330,6 @@
   top: calc(var(--header-h) + 24px);
 }
 
-/* The chosen service's picture, sitting on top of the dark estimate box. */
 .summaryImage {
   position: relative;
   aspect-ratio: 16 / 10;
@@ -166,16 +337,23 @@
   border-radius: var(--radius-panel) var(--radius-panel) 0 0;
   overflow: hidden;
   background: var(--abyss);
+  animation: fade-in 0.6s var(--ease-out) both;
 }
 
 .summaryImage img {
   object-fit: cover;
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
 .summaryInner {
   position: relative;
   display: grid;
-  gap: 16px;
+  gap: 18px;
   padding: 28px;
   border-radius: var(--radius-panel);
   background: var(--abyss);
@@ -190,31 +368,27 @@
   letter-spacing: -0.03em;
 }
 
-.lines {
+.summaryAnswers {
   display: grid;
   gap: 10px;
   margin: 0;
-  padding: 0 0 16px;
+  padding: 0 0 18px;
   list-style: none;
   border-bottom: 1px solid var(--dark-line);
   font-size: var(--step--1);
 }
 
-.lines li {
+.summaryAnswers li {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: 16px;
   animation: line-in 0.4s var(--ease-out) both;
 }
 
-.lines li span:last-child {
+.summaryAnswers li span:last-child {
   color: #fff;
   font-weight: 700;
-  white-space: nowrap;
-}
-
-.lines .empty {
-  color: var(--mist);
+  text-align: right;
 }
 
 @keyframes line-in {
@@ -224,56 +398,14 @@
   }
 }
 
-.total {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  color: #fff;
-}
-
-.total strong {
-  font-family: var(--font-display);
-  font-size: var(--step-3);
-  letter-spacing: -0.04em;
-}
-
-.note,
-.help {
+.summaryEmpty,
+.summaryHelp {
   font-size: var(--step--1);
 }
 
-.help a {
+.summaryHelp a {
   color: #fff;
   font-weight: 700;
-}
-
-.optional {
-  margin-top: -12px;
-  color: var(--muted);
-}
-
-.reviewLines {
-  display: grid;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.reviewLines li {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.reviewLines li span:last-child {
-  color: var(--ink);
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.mobileTotal {
-  display: none;
 }
 
 .done {
@@ -282,49 +414,15 @@
 }
 
 @media (max-width: 1000px) {
-  .main,
-  .summary {
+  .main {
     grid-column: 1 / -1;
   }
+  /* The side panel only repeats what's on screen; phones get the chip instead. */
   .summary {
-    position: static;
-    margin-top: 40px;
-    scroll-margin-top: calc(var(--header-h) + 16px);
+    display: none;
   }
-  .mobileTotal {
-    position: fixed;
-    inset: auto 0 0;
-    z-index: 50;
+  .chip {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px var(--margin) calc(12px + env(safe-area-inset-bottom));
-    background: var(--abyss);
-    color: var(--mist);
-    font-size: var(--step--1);
-    animation: bar-in 0.5s var(--ease-out) both;
-  }
-  .mobileTotal strong {
-    font-family: var(--font-display);
-    font-size: var(--step-2);
-    color: #fff;
-    letter-spacing: -0.03em;
-  }
-  .mobileTotal a {
-    margin-left: auto;
-    color: #fff;
-    font-weight: 700;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .flow {
-    padding-bottom: 72px;
-  }
-}
-
-@keyframes bar-in {
-  from {
-    transform: translateY(100%);
   }
 }
 
@@ -332,11 +430,27 @@
   .fields {
     grid-template-columns: 1fr;
   }
-  .review dl > div {
-    grid-template-columns: 1fr auto;
+  .answers > div {
+    grid-template-columns: minmax(0, 1fr) auto;
   }
-  .review dd {
+  .answers dd {
     grid-column: 1 / -1;
     grid-row: 2;
+  }
+  .nav :global(.btn) {
+    width: 100%;
+    justify-content: center;
+  }
+  .estimate {
+    padding: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step,
+  .breakdown,
+  .summaryAnswers li,
+  .summaryImage {
+    animation: none;
   }
 }

@@ -75,6 +75,8 @@ export type TvSelection = {
   hideCords?: boolean;
   conceal?: string; // only counts when hideCords is true
   addOns: string[];
+  /** what the customer typed for the "Other" add-on */
+  otherAddOn?: string;
   takedown?: boolean;
   deviceSetup: number; // 0–3 (3 = "3+")
   devicesBehind: number; // 0–3 (3 = "3+")
@@ -148,7 +150,11 @@ export function estimateNotes(s: TvSelection, p: PriceBook = defaultPrices): str
   if (s.mount !== "own") add("Mount: ", pick(p.mounts, s.mount));
   add("Wall: ", pick(p.surfaces, s.surface));
   if (s.hideCords) add("Cords: ", pick(p.concealment, s.conceal));
-  for (const id of s.addOns) add("Add-on: ", pick(p.addOns, id));
+  for (const id of s.addOns) {
+    const c = pick(p.addOns, id);
+    if (id === "other" && s.otherAddOn?.trim()) notes.push(`Add-on: ${s.otherAddOn.trim()} (quoted separately)`);
+    else add("Add-on: ", c);
+  }
   return notes;
 }
 
