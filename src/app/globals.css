@@ -390,9 +390,14 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  /* a 44px tap area that doesn't change the line it sits on */
+  padding-block: 9px;
+  margin-block: -9px;
   font-weight: 700;
   color: var(--brand-text);
   background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  background-origin: content-box;
+  background-clip: content-box;
   transition: background-size var(--dur-ui) var(--ease-out);
 }
 

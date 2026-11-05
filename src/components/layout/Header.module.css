@@ -128,15 +128,16 @@
   white-space: nowrap;
 }
 
-/* Menu button: the site's secondary-button style (outline), shown only when the links fold away. */
+/* Menu button: icon + word, no outline; shown only when the links fold away. */
 .toggle {
   display: none;
   align-items: center;
   gap: 10px;
   height: 44px;
-  padding: 0 18px 0 14px;
-  border: 1px solid var(--control);
-  border-radius: var(--radius-pill);
+  margin-right: -8px; /* lines the icon up with the page edge, keeping a 44px target */
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
   background: transparent;
   color: var(--fg-strong);
   font-size: 0.875rem;
@@ -145,18 +146,16 @@
   transition: background-color var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out);
 }
 
-.toggle:hover {
-  border-color: var(--fg-strong);
-}
-
-.header[data-tone="dark"] .toggle {
-  border-color: rgba(255, 255, 255, 0.45);
+@media (hover: hover) {
+  .toggle:hover {
+    color: var(--accent);
+  }
 }
 
 /* Two lines that cross into an X */
 .toggleLines {
   position: relative;
-  width: 16px;
+  width: 20px;
   height: 10px;
 }
 
@@ -296,11 +295,32 @@
    (nothing is ever squeezed or wrapped). ≤760px: the bottom bar carries Call + Book. */
 
 @media (max-width: 1240px) {
+  /* Logo left, actions (ending with Menu) right. */
+  .bar {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
   .nav {
     display: none;
   }
   .toggle {
     display: inline-flex;
+  }
+  .brand {
+    height: 34px;
+  }
+  /* A solid bar with a clear bottom edge, whatever is underneath. */
+  .header,
+  .header[data-scrolled],
+  .header[data-open] {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: saturate(160%) blur(16px);
+    -webkit-backdrop-filter: saturate(160%) blur(16px);
+    box-shadow: 0 1px 0 rgba(11, 15, 23, 0.14);
+  }
+  .header[data-tone="dark"],
+  .header[data-tone="dark"][data-scrolled] {
+    background: rgba(3, 10, 22, 0.86);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.16);
   }
 }
 
@@ -335,6 +355,6 @@
 
 @media (max-width: 380px) {
   .brand {
-    height: 24px;
+    height: 30px;
   }
 }

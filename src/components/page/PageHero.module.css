@@ -53,6 +53,13 @@
   color: var(--line-strong);
 }
 
+/* A 44px tap area without moving the line. */
+.crumbs a {
+  display: inline-block;
+  padding: 12px 4px;
+  margin: -12px -4px;
+}
+
 .crumbs a:hover {
   color: var(--ink);
 }

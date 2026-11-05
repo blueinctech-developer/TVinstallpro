@@ -102,8 +102,11 @@
 }
 
 @media (max-width: 560px) {
-  .col,
-  .col:nth-of-type(1) {
+  /* Site and Services side by side, Contact below: full-size tap targets without a very long footer. */
+  nav.col {
+    grid-column: span 2;
+  }
+  div.col {
     grid-column: 1 / -1;
   }
 }
@@ -111,5 +114,19 @@
 @media (max-width: 760px) {
   .footer {
     padding-bottom: 72px;
+  }
+  .col ul {
+    gap: 0;
+  }
+  .col li {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .col a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding-block: 4px;
   }
 }
