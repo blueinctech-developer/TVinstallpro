@@ -97,16 +97,16 @@ export function EmailForm({ e }: { e: EmailSettings }) {
   const [state, action, pending] = useKeepForm<SettingsResult>(saveEmail, {});
   return (
     <form onSubmit={action} className={styles.loginForm}>
-      <Text label="Bookings and contact messages go to" name="alertsTo" value={e.alertsTo} hint="One or more addresses, separated by commas." />
+      <Text label="Bookings and contact messages go to" name="alertsTo" value={e.alertsTo} hint="One or more addresses, separated by commas. Left empty, alerts go to the owner's inbox (evangdavesca@gmail.com)." />
       <Text label="Partner requests go to" name="partnerAlertsTo" value={e.partnerAlertsTo} hint="Leave empty to use the addresses above." />
       <div className={styles.formRow}>
         <Text label="Sender name" name="fromName" value={e.fromName} required />
         <Text label="Sender address" name="fromEmail" value={e.fromEmail} type="email" required hint="Must be allowed by your SMTP provider." />
       </div>
-      <Text label="Customers' replies go to" name="replyTo" value={e.replyTo} type="email" hint="Leave empty to use the sender address." />
+      <Text label="Customers' replies go to" name="replyTo" value={e.replyTo} type="email" hint="Leave empty for a no-reply email (customers are pointed to your phone and WhatsApp instead)." />
       <label className={styles.formRow} style={{ alignItems: "center", fontWeight: 600 }}>
         <input type="checkbox" name="confirmToCustomer" defaultChecked={e.confirmToCustomer} style={{ width: 20, height: 20 }} />
-        Email customers a copy of their booking or partner request
+        Email customers a branded confirmation of their booking, message or partner request
       </label>
       <Save pending={pending} />
       <Msg state={state} />
