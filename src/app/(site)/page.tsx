@@ -1,6 +1,5 @@
 import { BookingCta } from "@/components/home/BookingCta";
 import { Faq } from "@/components/home/Faq";
-import { Figures } from "@/components/home/Figures";
 import { Hero } from "@/components/home/Hero";
 import { Journey } from "@/components/home/Journey";
 import { Precision } from "@/components/home/Precision";
@@ -12,7 +11,6 @@ export default function HomePage() {
     <>
       <Hero />
       <Precision />
-      <Figures />
       <ServicesFan />
       <Work />
       <Journey />
