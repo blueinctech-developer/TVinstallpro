@@ -124,7 +124,7 @@ export const services: Service[] = [
 
 export const serviceBySlug = (slug?: string | null) => services.find((s) => s.slug === slug);
 
-// Listed under "other services" on the live Services & Pricing page.
+// Listed under "other services" on the Services page.
 export const otherServices = [
   "Handyman services",
   "Drywall installation",
@@ -173,7 +173,7 @@ export const work = [
 export const faqsFor = (b: { warrantyMonths: number; componentsIncluded: number }) => [
   {
     q: "How much does TV mounting cost?",
-    a: "Mounting starts at $79.99 for TVs up to 31″ and goes up by TV size. Mounts, wall type, cable concealment and extras are itemised in our instant estimate on the booking page. The technician confirms the final price.",
+    a: "It depends on your TV size, the mount, the wall and any extras. Answer a few quick questions on the booking page and you'll see your estimate before you send anything. The technician confirms the final price.",
   },
   {
     q: "What kinds of walls can you mount on?",

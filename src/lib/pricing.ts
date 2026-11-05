@@ -163,6 +163,3 @@ export const estimateTotal = (s: TvSelection, p: PriceBook = defaultPrices) => e
 export const money = (n: number) =>
   n.toLocaleString("en-CA", { style: "currency", currency: "CAD", minimumFractionDigits: n % 1 ? 2 : 0 });
 
-/** The lowest possible TV-mounting estimate: smallest TV, own mount, no extras. */
-export const tvFrom = tvSizes[0].price;
-export const tvFromOf = (p: PriceBook) => Math.min(...p.tvSizes.map((c) => c.price));

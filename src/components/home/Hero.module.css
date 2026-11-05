@@ -13,7 +13,7 @@
   overflow: hidden;
 }
 
-/* The central axis runs from below the headline down through the TV and the price. */
+/* The central axis runs from below the headline down through the TV. */
 .axis {
   top: 46%;
 }
@@ -45,7 +45,7 @@
   z-index: 2;
   display: grid;
   justify-items: center;
-  /* sized by width and height, so the whole hero (incl. price and CTAs) fits short laptop screens */
+  /* sized by width and height, so the whole hero (incl. the CTAs) fits short laptop screens */
   font-size: min(var(--step-5), 11vh);
   line-height: 0.92;
   letter-spacing: -0.05em;
@@ -89,36 +89,14 @@
 }
 
 .pitch {
-  grid-column: 1 / span 4;
+  grid-column: 1 / span 5;
   color: var(--muted);
   font-size: var(--step-1);
   max-width: 34ch;
 }
 
-.price {
-  grid-column: 5 / span 4;
-  display: grid;
-  justify-items: center;
-  text-align: center;
-}
-
-.priceLabel {
-  font-size: var(--step--1);
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.priceValue {
-  font-family: var(--font-display);
-  font-size: var(--step-3);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  color: var(--ink);
-}
-
 .ctas {
-  grid-column: 9 / span 4;
+  grid-column: 7 / span 6;
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
@@ -128,10 +106,6 @@
 @media (max-width: 1080px) {
   .pitch {
     grid-column: 1 / span 6;
-  }
-  .price {
-    grid-column: 1 / -1;
-    order: -1;
   }
   .ctas {
     grid-column: 1 / -1;

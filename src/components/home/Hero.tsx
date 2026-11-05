@@ -8,13 +8,11 @@ import { IntroMotion } from "@/components/motion/IntroMotion";
 import { SplitChars } from "@/components/motion/SplitChars";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 import { useSiteData } from "@/components/SiteData";
-import { money, tvFromOf } from "@/lib/pricing";
 import { bookHref } from "@/lib/site";
 import styles from "./Hero.module.css";
 
 export function Hero() {
-  const { business: site, prices } = useSiteData();
-  const tvFrom = tvFromOf(prices);
+  const { business: site } = useSiteData();
   const progress = useRef(0);
   // Scroll progress drives the headline drift (CSS --p) and the TV's pose (ref).
   const ref = useScrollProgress<HTMLDivElement>("leave", (p) => {
@@ -49,13 +47,8 @@ export function Hero() {
 
         <div className={`wrap grid ${styles.foot}`}>
           <p className={styles.pitch} data-intro-item>
-            Itemised prices before we arrive and a {site.warrantyMonths}-month warranty on installation work. Same-day
+            Book online in about two minutes, with a {site.warrantyMonths}-month warranty on installation work. Same-day
             installation is often available.
-          </p>
-
-          <p className={styles.price} data-intro-item>
-            <span className={styles.priceLabel}>TV mounting from</span>
-            <span className={styles.priceValue}>{money(tvFrom)}</span>
           </p>
 
           <div className={styles.ctas} data-intro-item>

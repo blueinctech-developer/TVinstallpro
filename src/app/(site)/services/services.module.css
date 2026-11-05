@@ -12,23 +12,6 @@
   gap: 20px;
 }
 
-.from {
-  display: grid;
-}
-
-.from span {
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.from strong {
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 2rem + 4vw, 5.5rem);
-  letter-spacing: -0.05em;
-  line-height: 1;
-  color: var(--brand-text);
-}
-
 .tvBody {
   color: var(--muted);
 }
@@ -37,13 +20,12 @@
   display: grid;
   gap: 8px;
   margin: 0;
-  padding: 0;
-  list-style: none;
+  padding: 0 0 0 20px;
   color: var(--muted);
 }
 
-.facts strong {
-  color: var(--ink);
+.facts li::marker {
+  color: var(--brand-text);
 }
 
 .tables {
@@ -68,36 +50,28 @@
   color: var(--muted);
 }
 
-.table dl {
+.table ul {
+  display: grid;
   margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.table dl > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
+.table li {
   padding: 9px 0;
   border-top: 1px solid var(--line);
   font-size: 0.92rem;
-}
-
-.table dt {
-  min-width: 0;
   color: var(--text);
 }
 
-.rowNote {
-  display: block;
-  font-size: var(--step--1);
-  color: var(--muted);
+/* An odd group out (add-ons) takes the full row, its list in two columns. */
+.table:last-of-type:nth-of-type(odd) {
+  grid-column: 1 / -1;
 }
 
-.table dd {
-  margin: 0;
-  font-weight: 700;
-  color: var(--ink);
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
+.table:last-of-type:nth-of-type(odd) ul {
+  grid-template-columns: 1fr 1fr;
+  column-gap: 24px;
 }
 
 .tableNote {
@@ -125,12 +99,6 @@
   border-radius: 50%;
   background: #fff;
   color: var(--brand-text);
-}
-
-.quote {
-  font-family: var(--font-display);
-  font-weight: 700;
-  color: var(--ink) !important;
 }
 
 .chips {
@@ -162,76 +130,10 @@
 }
 
 @media (max-width: 560px) {
-  .tables {
+  .table:last-of-type:nth-of-type(odd) ul {
     grid-template-columns: 1fr;
   }
-}
-
-/* ---------- Opening price strip (on the dark page opening) ---------- */
-.strip {
-  display: grid;
-  grid-template-columns: 1.3fr repeat(4, minmax(0, 1fr));
-  margin: 0;
-}
-
-.strip > div {
-  display: grid;
-  align-content: center;
-  gap: 4px;
-  padding: clamp(20px, 2.4vw, 32px) clamp(14px, 1.6vw, 24px);
-}
-
-.strip > div + div {
-  border-left: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.strip dd {
-  margin: 0;
-}
-
-.strip > .stripHead {
-  padding-left: 0;
-}
-
-.stripHead dt {
-  font-weight: 700;
-  color: #fff;
-}
-
-.stripHead dd {
-  font-size: var(--step--1);
-  color: #c3cfdf;
-}
-
-.stripCell dt {
-  font-size: var(--step--1);
-  font-weight: 600;
-  color: #c3cfdf; /* ≥9:1 on the strip */
-}
-
-.stripCell dd {
-  font-family: var(--font-display);
-  font-size: var(--step-2);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  color: #fff;
-}
-
-@media (max-width: 900px) {
-  .strip {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 24px;
-  }
-  .strip > .stripHead {
-    grid-column: 1 / -1;
-    padding-bottom: 0;
-  }
-  .strip > div + div {
-    border-left: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-  }
-  .strip > .stripCell {
-    padding-left: 0;
+  .tables {
+    grid-template-columns: 1fr;
   }
 }

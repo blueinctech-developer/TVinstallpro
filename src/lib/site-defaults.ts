@@ -2,7 +2,7 @@
 // The values in site.ts, content.ts and pricing.ts are the defaults until someone saves a change.
 import type { IconName } from "@/components/Icon";
 import { images, services as defaultServices, type Service } from "./content";
-import { defaultPrices, money, tvFromOf, type Choice, type PriceBook } from "./pricing";
+import { defaultPrices, type Choice, type PriceBook } from "./pricing";
 import { site } from "./site";
 
 export type Business = {
@@ -145,8 +145,7 @@ export function buildSiteData(
 export const defaultSiteData = buildSiteData();
 
 /** The price shown beside a service wherever services are listed. */
-export const servicePriceLabel = (s: Service, prices: PriceBook) =>
-  s.estimator ? `From ${money(tvFromOf(prices))}` : s.priceFrom ? `From ${money(s.priceFrom)}` : "Quote";
+
 
 const WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
 /** 8 → "Eight", for copy that counts services. */

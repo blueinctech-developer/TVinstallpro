@@ -101,7 +101,7 @@
 .item {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  grid-template-areas: "icon text arrow" ". price arrow";
+  grid-template-areas: "icon text arrow";
   align-items: center;
   column-gap: 16px;
   row-gap: 8px;
@@ -147,14 +147,6 @@
   font-size: var(--step--1);
 }
 
-.itemPrice {
-  grid-area: price;
-  font-family: var(--font-display);
-  font-size: var(--step--1);
-  font-weight: 700;
-  color: var(--brand-text);
-  white-space: nowrap;
-}
 
 .itemArrow {
   grid-area: arrow;
