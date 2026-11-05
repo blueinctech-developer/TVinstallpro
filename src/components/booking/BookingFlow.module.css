@@ -158,7 +158,22 @@
   top: calc(var(--header-h) + 24px);
 }
 
+/* The chosen service's picture, sitting on top of the dark estimate box. */
+.summaryImage {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  margin-bottom: -24px; /* tucks under the box's rounded top */
+  border-radius: var(--radius-panel) var(--radius-panel) 0 0;
+  overflow: hidden;
+  background: var(--abyss);
+}
+
+.summaryImage img {
+  object-fit: cover;
+}
+
 .summaryInner {
+  position: relative;
   display: grid;
   gap: 16px;
   padding: 28px;
