@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/logo/Logo";
-import { currentUser } from "@/lib/admin/auth";
+import { sessionUser } from "@/lib/admin/auth";
 import styles from "../admin.module.css";
 import { LoginForm } from "./LoginForm";
 
 export const metadata: Metadata = { title: "Sign in" };
 
 export default async function LoginPage() {
-  if (await currentUser()) redirect("/admin");
+  // Already past the password: carry on to 2FA or the dashboard (requireUser() decides which).
+  if (await sessionUser()) redirect("/admin");
   return (
     <main className={styles.login}>
       <div className={styles.loginCard}>

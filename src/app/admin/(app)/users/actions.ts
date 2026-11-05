@@ -76,6 +76,19 @@ export async function updateUser(_: UserActionResult, form: FormData): Promise<U
     return { ok: `${u.name} ${disable ? "can no longer sign in" : "can sign in again"}.` };
   }
 
+  if (op === "reset-2fa") {
+    if (u.id === me.id) return { error: "You can't reset your own two-factor sign-in. Ask another administrator." };
+    // Lost phone: clear 2FA and sign them out; they set it up again at their next sign-in.
+    await conn.query(
+      "update admin_users set totp_secret = null, totp_enabled_at = null, totp_last_step = null, recovery_codes = '[]' where id = $1",
+      [id],
+    );
+    await conn.query("delete from admin_sessions where user_id = $1", [id]);
+    await logActivity(me.id, "2FA reset", `user:${id}`);
+    revalidatePath("/admin/users");
+    return { ok: `${u.name}'s two-factor sign-in was reset. They'll set it up again next time they sign in.` };
+  }
+
   if (op === "reset") {
     const link = await createToken(u.id, "reset", me.id);
     await logActivity(me.id, "password reset link created", `user:${id}`);

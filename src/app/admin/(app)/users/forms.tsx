@@ -71,7 +71,7 @@ export function AddUserForm() {
   );
 }
 
-export function UserRowActions({ id, role, disabled, isMe }: { id: number; role: Role; disabled: boolean; isMe: boolean }) {
+export function UserRowActions({ id, role, disabled, isMe, mfa }: { id: number; role: Role; disabled: boolean; isMe: boolean; mfa: boolean }) {
   const [state, action, pending] = useActionState<UserActionResult, FormData>(updateUser, {});
   return (
     <div style={{ display: "grid", gap: 8, minWidth: 220 }}>
@@ -99,6 +99,20 @@ export function UserRowActions({ id, role, disabled, isMe }: { id: number; role:
             Password link
           </button>
         </form>
+        {!isMe && mfa && (
+          <form
+            action={action}
+            onSubmit={(e) => {
+              if (!confirm("Reset their two-factor sign-in? Use this if they've lost their phone. They'll be signed out and set it up again next time.")) e.preventDefault();
+            }}
+          >
+            <input type="hidden" name="id" value={id} />
+            <input type="hidden" name="op" value="reset-2fa" />
+            <button type="submit" className={`btn btn--ghost ${styles.btnSm}`} disabled={pending}>
+              Reset 2FA
+            </button>
+          </form>
+        )}
         {!isMe && (
           <form
             action={action}
