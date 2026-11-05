@@ -47,13 +47,13 @@ export function Hero() {
 
         <div className={`wrap grid ${styles.foot}`}>
           <p className={styles.pitch} data-intro-item>
-            Book online in about two minutes, with a {site.warrantyMonths}-month warranty on installation work. Same-day
-            installation is often available.
+            Expert mounting, clean cable work and a {site.warrantyMonths}-month warranty on every installation. Book online
+            in minutes, with same-day appointments often available.
           </p>
 
           <div className={styles.ctas} data-intro-item>
             <Link href={bookHref} className="btn">
-              Get an instant estimate
+              Book your installation
               <span className="btn-dot" aria-hidden="true">
                 <Icon name="arrow" size={14} strokeWidth={2} />
               </span>

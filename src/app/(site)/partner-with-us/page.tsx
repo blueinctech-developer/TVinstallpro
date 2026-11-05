@@ -9,15 +9,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const site = (await getSiteData()).business;
   return {
     title: "Partner With Us",
-    description: `Send ${site.name} a partnership request: complete installations, from TVs to sound and gaming systems.`,
+    description: `Partner with ${site.name} for complete, professional installations, from a single TV to full sound and gaming systems.`,
     alternates: { canonical: "/partner-with-us" },
   };
 }
 
 const steps = [
-  { n: "01", title: "Send your request", text: "Tell us who you are and what you have in mind." },
-  { n: "02", title: "We call you", text: "At the time you choose, to talk it through." },
-  { n: "03", title: "We plan the work", text: "Together, from a single install to a complete entertainment system." },
+  { n: "01", title: "Tell us about your project", text: "Share who you are and what you have in mind." },
+  { n: "02", title: "We'll give you a call", text: "At a time that suits you, to talk through the details." },
+  { n: "03", title: "We plan it together", text: "From a single installation to a complete entertainment system." },
 ];
 
 export default async function PartnerPage() {
@@ -29,7 +29,7 @@ export default async function PartnerPage() {
         crumb="Partner With Us"
         title="Let's build"
         ghost="it together."
-        lead="We work with partners to create the ideal installation, from a single TV to a complete entertainment system with sound and gaming."
+        lead="We work with partners to deliver complete, professional installations, from a single TV to a full entertainment system with sound and gaming."
       />
       <section className={page.section}>
         <div className="wrap grid">
@@ -49,7 +49,7 @@ export default async function PartnerPage() {
               ))}
             </ol>
             <p className={styles.direct} data-reveal="">
-              Rather talk now? <a href={site.phoneHref}>{site.phone}</a>
+              Prefer to talk now? <a href={site.phoneHref}>{site.phone}</a>
             </p>
           </aside>
           <div className={styles.formCol} data-reveal="">

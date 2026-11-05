@@ -32,8 +32,8 @@ export const services: Service[] = [
   {
     slug: "tv-mounting",
     title: "TV Installation & Mounting",
-    short: "Your TV on the wall, levelled, secured and wired cleanly.",
-    body: "We mount your TV on the wall or wherever you choose, on drywall, brick, concrete, tile or stone, with fixed, tilting or full-motion mounts and optional cable concealment.",
+    short: "Mounted level, secured properly and finished with clean cables.",
+    body: "From a bedroom TV on drywall to a large screen on brick or stone, we mount it securely, level it precisely and finish with clean, hidden cables. Fixed, tilting and full-motion mounts available.",
     icon: "tv",
     image: "/images/tv-marble-wall.jpg",
     cardImage: "/images/services/tv-mounting.jpg",
@@ -43,8 +43,8 @@ export const services: Service[] = [
   {
     slug: "mantel-mount",
     title: "Mantel Mount Installation",
-    short: "TVs mounted above the fireplace, at the height you'll actually watch.",
-    body: "Mantel mounts fixed above your fireplace for better viewing angles and more floor space, with no TV stand needed. Installed securely by our technicians.",
+    short: "Above the fireplace, at a height that's comfortable to watch.",
+    body: "A mantel mount lets your TV sit above the fireplace and come down to eye level when you're watching. More floor space, better viewing angles and no TV stand required.",
     icon: "fireplace",
     image: "/images/mantel-mount-fireplace.jpg",
     cardImage: "/images/services/mantel-mount.jpg",
@@ -53,8 +53,8 @@ export const services: Service[] = [
   {
     slug: "laser-tv",
     title: "Laser TV Installation",
-    short: "Placed for the room's light, then calibrated for picture.",
-    body: "We review the room's lighting and layout, place the laser TV away from windows at a comfortable viewing distance and height, then calibrate brightness, contrast and colour.",
+    short: "Positioned for your room and calibrated for a stunning picture.",
+    body: "We assess your room's light and layout, place your laser TV at the ideal distance and height, then fine-tune brightness, contrast and colour so the picture looks its best.",
     icon: "projector",
     image: "/images/laser-tv.jpg",
     cardImage: "/images/services/laser-tv.jpg",
@@ -63,8 +63,8 @@ export const services: Service[] = [
   {
     slug: "samsung-frame",
     title: "Samsung Frame Installation",
-    short: "Flush, gallery-style mounting for The Frame.",
-    body: "Precise, secure mounting and positioning for Samsung's Frame TV, so its art mode and bezels look the way they were designed to.",
+    short: "Flush, gallery-style mounting that does The Frame justice.",
+    body: "Samsung's Frame TV is designed to hang like artwork. We mount it flush and perfectly positioned, so art mode looks exactly as intended.",
     icon: "frame",
     image: "/images/samsung-frame.jpg",
     cardImage: "/images/services/samsung-frame.jpg",
@@ -73,8 +73,8 @@ export const services: Service[] = [
   {
     slug: "appliances",
     title: "Home Appliances",
-    short: "Dishwashers, refrigerators, stoves and ovens, installed and tested.",
-    body: "From dishwashers and refrigerators to stoves and ovens, installed according to how each appliance works and tailored to your home.",
+    short: "Dishwashers, fridges, ranges and ovens, installed and tested.",
+    body: "From dishwashers and refrigerators to ranges and ovens, we install each appliance correctly for your home and test it before we leave.",
     icon: "appliance",
     image: "/images/microwave-install.jpg",
     cardImage: "/images/services/appliances.jpg",
@@ -83,8 +83,8 @@ export const services: Service[] = [
   {
     slug: "blinds-curtains",
     title: "Blinds & Curtains",
-    short: "Traditional, modern and custom window treatments.",
-    body: "Blinds and curtains in traditional, modern and custom styles and materials, installed for Canadian climates.",
+    short: "Window treatments, measured and hung with care.",
+    body: "Traditional, modern or custom blinds and curtains, installed straight, secure and ready for every Canadian season.",
     icon: "blinds",
     image: "/images/blinds-dining-room.jpg",
     cardImage: "/images/services/blinds-curtains.jpg",
@@ -93,8 +93,8 @@ export const services: Service[] = [
   {
     slug: "garage-shelving",
     title: "Garage Shelf Organization",
-    short: "Cluttered garages turned into organized, functional space.",
-    body: "Customized garage storage and firmly installed shelving that turns a cluttered garage into an organized, functional space.",
+    short: "A cluttered garage turned into organized, usable space.",
+    body: "Custom storage and sturdy wall-mounted shelving that brings order to your garage and keeps everything within reach.",
     icon: "shelf",
     image: "/images/garage-shelving.jpg",
     cardImage: "/images/services/garage-shelving.jpg",
@@ -103,8 +103,8 @@ export const services: Service[] = [
   {
     slug: "gazebos-sheds",
     title: "Gazebos & Sheds",
-    short: "Durable outdoor structures, installed to your design.",
-    body: "Gazebo and shed installation with durable structures and personalized design.",
+    short: "Sturdy outdoor structures, assembled and installed for you.",
+    body: "Gazebos and sheds built to last, assembled and installed to suit your yard and the way you use it.",
     icon: "gazebo",
     image: "/images/gazebo-assembly.jpg",
     cardImage: "/images/services/gazebos-sheds.jpg",
@@ -113,8 +113,8 @@ export const services: Service[] = [
   {
     slug: "wallpaper",
     title: "Wallpaper Works",
-    short: "Feature and textured walls, from prep to final panel.",
-    body: "Bold feature walls or subtle textures, with the full job handled: cleaning, priming and sizing the wall, then hanging.",
+    short: "Feature walls and textures, from prep to final panel.",
+    body: "From a bold feature wall to a subtle texture, we handle it all: cleaning, priming and preparing the wall, then hanging every panel with seams perfectly matched.",
     icon: "wallpaper",
     image: "/images/wallpaper-bedroom.jpg",
     cardImage: "/images/services/wallpaper.jpg",
@@ -148,10 +148,10 @@ export const otherServices = [
 
 // The four-step process from the live homepage.
 export const process = [
-  { title: "Book a service", text: "Book online, call or message us with what you need installed." },
-  { title: "Meet our experts", text: "A technician visits at a time that's convenient for you." },
-  { title: "Work starts", text: "We install everything with as little disruption to your home as possible." },
-  { title: "Testing", text: "A final check of every connection and mount before we leave." },
+  { title: "Book in minutes", text: "Book online, call or send us a message. Tell us what you need and we'll take it from there." },
+  { title: "We confirm your visit", text: "We get in touch to confirm the details and arrive at a time that suits you." },
+  { title: "Expert installation", text: "Your technician works cleanly and carefully, with minimal disruption to your home." },
+  { title: "Tested and ready", text: "We test every connection, tidy up and make sure you're happy before we leave." },
 ];
 
 export const images = {
@@ -161,46 +161,46 @@ export const images = {
 
 // Job photos from the live site. "focus" is the object-position that keeps the subject in crop. Captions only describe what is in the frame: no places, dates or clients.
 export const work = [
-  { src: "/images/tv-marble-wall.jpg", caption: "TV on a marble feature wall" },
-  { src: "/images/mount-on-brick.jpg", caption: "Full-motion mount on brick, before the TV goes up" },
+  { src: "/images/tv-marble-wall.jpg", caption: "TV mounted on a marble feature wall" },
+  { src: "/images/mount-on-brick.jpg", caption: "Full-motion mount secured to brick" },
   { src: "/images/tv-panelled-wall.jpg", caption: "TV set into a panelled wall" },
   { src: "/images/mantel-mount-fireplace.jpg", caption: "Mantel mount above a fireplace", focus: "50% 22%" },
-  { src: "/images/wallpaper-install.jpg", caption: "Feature wallpaper going up", focus: "30% 40%" },
-  { src: "/images/tv-living-room.jpg", caption: "Living-room install, being set up" },
+  { src: "/images/wallpaper-install.jpg", caption: "Feature wallpaper, hung and matched", focus: "30% 40%" },
+  { src: "/images/tv-living-room.jpg", caption: "Living-room installation in progress" },
 ];
 
 // FAQs answered only with information published on the live site.
 export const faqsFor = (b: { warrantyMonths: number; componentsIncluded: number }) => [
   {
     q: "How much does TV mounting cost?",
-    a: "It depends on your TV size, the mount, the wall and any extras. Answer a few quick questions on the booking page and you'll see your estimate before you send anything. The technician confirms the final price.",
+    a: "Pricing depends on your TV size, mount, wall type and any extras. Our online booking shows your estimate before you send anything, and your technician confirms the final price on site.",
   },
   {
     q: "What kinds of walls can you mount on?",
-    a: "Drywall and wood, drywall with metal studs, plaster, concrete, brick, tile and stone. Harder surfaces carry a small surcharge, shown in the estimate.",
+    a: "Almost any: drywall, wood, metal studs, plaster, concrete, brick, tile and stone. We bring the right anchors and tools for your wall, and harder surfaces are reflected in your estimate.",
   },
   {
     q: "Can you hide the wires?",
-    a: "Yes. We can feed wires through an existing channel in the wall or conceal them neatly on the outside of the wall.",
+    a: "Yes. We can run cables inside the wall through an existing channel, or conceal them neatly behind a slim cover on the wall.",
   },
   {
     q: "Can you mount a TV above a fireplace?",
-    a: "Yes. Above-fireplace installs are a standard option in the estimate, and we also install mantel mounts.",
+    a: "Absolutely. We mount TVs above fireplaces, and we also install mantel mounts that bring the TV down to a comfortable viewing height.",
   },
   {
     q: "Is the work guaranteed?",
-    a: `Installation work is covered by a ${b.warrantyMonths}-month warranty, and extended maintenance plans of one or two years are available.`,
+    a: `Yes. Every installation is backed by a ${b.warrantyMonths}-month warranty, with optional one- and two-year extra care plans.`,
   },
   {
     q: "What's included in a standard installation?",
-    a: `Mounting and securing your TV, connecting up to ${b.componentsIncluded} existing components, and testing everything before we leave.`,
+    a: `We mount and secure your TV, connect up to ${b.componentsIncluded} of your existing devices and test everything before we leave.`,
   },
   {
     q: "Do you offer same-day installation?",
-    a: "Same-day installation is often available. Call us to check today's availability.",
+    a: "Often, yes. Give us a call and we'll check today's availability.",
   },
   {
-    q: "Is my booking confirmed when I submit the form?",
-    a: "Submitting sends us your request and estimate. We'll contact you to confirm the appointment time and final price.",
+    q: "Is my booking confirmed when I send it?",
+    a: "Your request reaches us straight away. We'll call or email to confirm your appointment time and final price.",
   },
 ];

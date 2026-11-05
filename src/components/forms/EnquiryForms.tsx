@@ -67,7 +67,7 @@ export function ContactForm() {
   };
 
   if (f.result) {
-    return <SubmitOutcome result={f.result} sentTitle="Message sent" sentText="Thanks for getting in touch. We'll reply as soon as we can." />;
+    return <SubmitOutcome result={f.result} sentTitle="Message sent" sentText="Thanks for reaching out. We'll get back to you shortly." />;
   }
 
   return (
@@ -146,7 +146,7 @@ export function PartnerForm() {
   };
 
   if (f.result) {
-    return <SubmitOutcome result={f.result} sentTitle="Request received" sentText="Thanks. We'll be in touch at the time you chose." />;
+    return <SubmitOutcome result={f.result} sentTitle="Request received" sentText="Thank you. We'll call you at the time you chose." />;
   }
 
   return (

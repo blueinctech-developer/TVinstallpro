@@ -7,10 +7,10 @@ import styles from "./Precision.module.css";
 
 // Each word is tied to something the business actually does (see docs/audit.md).
 const beats = [
-  { word: "Precision", text: "Every mount placed, measured and secured with the right hardware for your wall." },
-  { word: "Level", text: "Levelled and secured on drywall, metal studs, plaster, concrete, brick, tile or stone." },
-  { word: "Concealed", text: "Wires fed through an existing channel in the wall, or neatly concealed outside it." },
-  { word: "Tested", text: "A final check of every connection and input before we leave your home." },
+  { word: "Precision", text: "Measured, marked and mounted with hardware chosen for your wall." },
+  { word: "Level", text: "Perfectly level on drywall, metal studs, plaster, concrete, brick, tile or stone." },
+  { word: "Concealed", text: "Cables hidden inside the wall or behind a slim cover, for a clean, finished look." },
+  { word: "Tested", text: "Every connection checked and every input tested before we leave." },
 ];
 
 /**

@@ -21,10 +21,10 @@ export function Work() {
           tone="dark"
           title={
             <>
-              Real walls. <span className="ghost">Real installs.</span>
+              Professional <span className="ghost">installs.</span>
             </>
           }
-          lead="Photos from TV Install Pro jobs: the mounts, walls and finishes behind the work."
+          lead="A look at our recent work: clean lines, hidden cables and screens set exactly where they belong."
         />
         <div ref={ref} className={styles.mosaic}>
           {work.map((w, i) => (

@@ -13,17 +13,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const site = (await getSiteData()).business;
   return {
     title: "About",
-    description: `${site.name} provides professional, affordable, on-time TV and home installation in ${site.area}.`,
+    description: `${site.name} delivers professional, dependable TV and home installation across ${site.area}.`,
     alternates: { canonical: "/about" },
   };
 }
 
 // Paraphrased from the live About page (see docs/audit.md).
 const principlesFor = (site: SiteData["business"]) => [
-  { word: "Quality", text: "Skilled technicians and the right hardware for the job, using current tools and equipment." },
-  { word: "Affordable", text: "Professional installation without big-box pricing, with every option itemised up front." },
-  { word: "On time", text: "We arrive when we say we will and finish with as little disruption to your home as possible." },
-  { word: "Covered", text: `Installation work comes with a ${site.warrantyMonths}-month warranty.` },
+  { word: "Quality", text: "Skilled technicians, quality hardware and modern tools on every job." },
+  { word: "Fair", text: "Professional results at honest prices, with your estimate in front of you before you book." },
+  { word: "On time", text: "We arrive when we say we will and leave your home as tidy as we found it." },
+  { word: "Covered", text: `Every installation is backed by a ${site.warrantyMonths}-month warranty.` },
 ];
 
 export default async function AboutPage() {
@@ -35,7 +35,7 @@ export default async function AboutPage() {
         crumb="About"
         title="Installation,"
         ghost="done right."
-        lead={`${site.name} is a professional installation team serving ${site.area}.`}
+        lead={`A dedicated installation team serving ${site.area}, focused on getting every job right the first time.`}
         media={images.craft}
       />
 
@@ -51,19 +51,19 @@ export default async function AboutPage() {
           </div>
           <div className={styles.copy}>
             <h2 id="mission-title" className="display-3" data-reveal="">
-              Your equipment deserves better than whoever is available.
+              Your home deserves an expert.
             </h2>
             <p data-reveal="">
-              Big-box retailers can be expensive, and they may send inexperienced staff to install equipment worth
-              thousands of dollars. We think that&apos;s a risk you shouldn&apos;t have to take.
+              Your TV, sound system and appliances are a real investment. They deserve more than a rushed job by
+              whoever happens to be available.
             </p>
             <p data-reveal="">
-              Our mission is to provide exceptional, professional installation that is hassle-free, high quality,
-              affordable and completed on time, so your TV, sound and appliances work exactly as they should.
+              That&apos;s why we do things properly: experienced technicians, the right hardware for your wall and a clean,
+              careful finish, delivered on time and at a fair price.
             </p>
             <p data-reveal="">
-              A standard TV installation includes connecting up to {site.componentsIncluded} of your existing components,
-              and every job ends with a full test before we leave.
+              Every standard TV installation includes connecting up to {site.componentsIncluded} of your existing devices, and
+              every job ends with a full test before we leave.
             </p>
           </div>
         </div>

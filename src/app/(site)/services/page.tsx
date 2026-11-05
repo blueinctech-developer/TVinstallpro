@@ -41,7 +41,7 @@ export default async function ServicesPage() {
         crumb="Services"
         title="Our"
         ghost="services."
-        lead={`TV mounting on any wall, and ${countWord(rest.length).toLowerCase()} more installation services from the same team.`}
+        lead={`Expert TV mounting on any wall, plus ${countWord(rest.length).toLowerCase()} more home installation services from the same trusted team.`}
         tone="dark"
       >
         <Link href="/book?service=tv-mounting" className="btn">
@@ -60,13 +60,13 @@ export default async function ServicesPage() {
               {tv.title}
             </h2>
             <p className={styles.tvBody} data-reveal="">
-              {tv.body} Answer a few quick questions and you&apos;ll see your estimate before you send anything.
+              {tv.body} Answer a few quick questions and you&apos;ll see your estimate before you book.
             </p>
             <ul className={styles.facts} data-reveal="">
-              <li>Above-fireplace installs</li>
-              <li>Taking down your old TV</li>
-              <li>Setting up your devices, or hiding them behind the TV</li>
-              <li>A second technician for 90″ – 100″ TVs</li>
+              <li>Above-fireplace installations</li>
+              <li>Removal of your existing TV</li>
+              <li>Device setup, or devices hidden neatly behind the TV</li>
+              <li>A second technician for 90″ – 100″ screens</li>
             </ul>
             <Link href="/book?service=tv-mounting" className="btn" data-reveal="">
               Book TV mounting
@@ -98,7 +98,7 @@ export default async function ServicesPage() {
           <SectionHead
             id="more-title"
             title="Beyond the TV."
-            lead={`${countWord(rest.length)} more installation services. Tell us about the job and we'll come back with a quote.`}
+            lead={`${countWord(rest.length)} more installation services. Tell us about your project and we'll send you a quote.`}
           />
           <div className={styles.rows}>
             {rest.map((s, i) => (
@@ -128,7 +128,7 @@ export default async function ServicesPage() {
           <SectionHead
             id="also-title"
             title="Also available."
-            lead="Handyman and installation work beyond our main services."
+            lead="Handyman and installation work beyond our core services. If it needs installing, ask us."
             action={
               <Link href="/contact" className="link">
                 Ask about another job <Icon name="arrow" size={16} />

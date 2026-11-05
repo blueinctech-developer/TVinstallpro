@@ -25,10 +25,10 @@ export function ServicesFan() {
         <SectionHead
           id="services-title"
           title="Every wall. Every screen."
-          lead={`${countWord(services.length)} installation services from one team. Book TV mounting online in minutes; tell us about anything else and we'll quote it.`}
+          lead={`${countWord(services.length)} installation services, one trusted team. Book TV mounting online in minutes, or tell us about your project and we'll send you a quote.`}
           action={
             <Link href="/services" className="link">
-              All services <Icon name="arrow" size={16} />
+              Explore all services <Icon name="arrow" size={16} />
             </Link>
           }
         />

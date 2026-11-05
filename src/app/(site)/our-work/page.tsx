@@ -8,7 +8,7 @@ import styles from "../blog/blog.module.css";
 
 export const metadata: Metadata = {
   title: "Our work",
-  description: "TV mounting and home installation projects by TV Install Pro in Ottawa and Gatineau.",
+  description: "Recent TV mounting and home installation projects by TV Install Pro across Ottawa and Gatineau.",
   alternates: { canonical: "/our-work" },
 };
 
@@ -18,7 +18,7 @@ export default async function OurWork() {
   if (!projects.length) notFound();
   return (
     <>
-      <PageHero crumb="Our work" title="Our" ghost="work." lead="Recent installations, photographed on the job." size="compact" />
+      <PageHero crumb="Our work" title="Our" ghost="work." lead="A selection of recent installations by our team." size="compact" />
       <section className={page.section}>
         <div className="wrap">
           <div className={styles.list}>

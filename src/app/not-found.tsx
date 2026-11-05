@@ -20,7 +20,7 @@ export default function NotFound() {
           <h1 className="display-1">
             No <span className="ghost">signal.</span>
           </h1>
-          <p className="lead">The page you&apos;re looking for isn&apos;t here. It may have moved when we rebuilt the site.</p>
+          <p className="lead">The page you&apos;re looking for has moved or no longer exists.</p>
           <Link href="/" className="btn">
             Back to home
             <span className="btn-dot" aria-hidden="true">

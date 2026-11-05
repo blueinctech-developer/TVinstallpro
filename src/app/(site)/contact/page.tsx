@@ -13,14 +13,14 @@ export async function generateMetadata(): Promise<Metadata> {
   const site = (await getSiteData()).business;
   return {
     title: "Contact",
-    description: `Call ${site.phone}, message us on WhatsApp, or send ${site.name} a message.`,
+    description: `Call ${site.phone}, message us on WhatsApp or send ${site.name} a message. Same-day appointments are often available.`,
     alternates: { canonical: "/contact" },
   };
 }
 
 const channelsFor = (site: SiteData["business"]) => [
   { icon: "phone" as const, label: "Call", value: site.phone, href: site.phoneHref },
-  { icon: "whatsapp" as const, label: "WhatsApp", value: "Message a technician", href: site.whatsapp, external: true },
+  { icon: "whatsapp" as const, label: "WhatsApp", value: "Chat with our team", href: site.whatsapp, external: true },
   { icon: "mail" as const, label: "Email", value: site.email, href: `mailto:${site.email}` },
 ];
 
@@ -34,7 +34,7 @@ export default async function ContactPage() {
         crumb="Contact"
         title="Talk to"
         ghost="a technician."
-        lead={`Serving ${site.area}. Same-day installation is often available. Call to check.`}
+        lead={`Serving ${site.area}. Same-day appointments are often available, so give us a call.`}
       >
         {/* The fastest route first: the phone number is the page's opening action. */}
         <a href={site.phoneHref} className="btn">
@@ -65,11 +65,11 @@ export default async function ContactPage() {
               ))}
             </ul>
             <p className={styles.direct} data-reveal="">
-              Want a price first? <Link href="/book">Build an instant TV-mounting estimate</Link>.
+              Ready to book? <Link href="/book">Book your installation online</Link> in about two minutes.
             </p>
           </aside>
           <div className={styles.formCol} data-reveal="">
-            <h2 className={`display-3 ${styles.formTitle}`}>Send a message</h2>
+            <h2 className={`display-3 ${styles.formTitle}`}>Send us a message</h2>
             <ContactForm />
           </div>
         </div>

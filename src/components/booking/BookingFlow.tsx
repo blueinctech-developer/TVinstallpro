@@ -34,20 +34,20 @@ type StepId =
   | "review";
 
 const QUESTIONS: Record<StepId, { title: string; help?: string }> = {
-  service: { title: "What can we help you with?", help: "Pick a service to get started." },
+  service: { title: "What can we help you with?", help: "Choose a service to get started." },
   size: { title: "How big is your TV?", help: "Measured corner to corner. Not sure? Pick the closest." },
   mount: { title: "Which wall mount would you like?", help: "We bring the mount, or use the one you have." },
   fireplace: { title: "Is the TV going above a fireplace?" },
-  surface: { title: "What's the wall made of?", help: "It tells us which anchors and drill bits to bring." },
-  cords: { title: "Would you like the cords hidden?", help: "No dangling cables under the TV." },
+  surface: { title: "What's the wall made of?", help: "So we arrive with the right anchors and tools." },
+  cords: { title: "Would you like the cords hidden?", help: "For a clean wall with no cables in sight." },
   conceal: { title: "How should we hide them?" },
   addons: { title: "Anything else while we're there?", help: "Optional. Pick as many as you like, or skip." },
   takedown: { title: "Does a TV need to come down first?" },
   deviceSetup: { title: "Any devices to set up?", help: "Cable box, games console, streaming box…" },
   devicesBehind: { title: "Any devices to hide behind the TV?", help: "An Apple TV or cable box, tucked out of sight." },
   another: { title: "Is there another TV to install?", help: "We'll plan it into the same visit." },
-  maintenance: { title: "Add an extra care plan?", help: "Covers the installation if anything needs adjusting later." },
-  details: { title: "Where should we send your booking?", help: "We'll call or email to confirm a time." },
+  maintenance: { title: "Add an extra care plan?", help: "Extended cover in case anything needs adjusting later." },
+  details: { title: "How can we reach you?", help: "We'll call or email to confirm a time that suits you." },
   review: { title: "Everything look right?" },
 };
 
@@ -672,9 +672,9 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
             <p className={styles.summaryEmpty}>
               {svc
                 ? isTv
-                  ? "Your answers appear here. You'll see your estimate before you send anything."
+                  ? "Your answers appear here as you go. You'll see your estimate before you send anything."
                   : "Tell us about the job and we'll come back with a quote."
-                : "A few quick questions, then we'll confirm a time with you."}
+                : "A few quick questions, then we'll confirm a time that suits you."}
             </p>
           )}
           <p className={styles.summaryHelp}>

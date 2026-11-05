@@ -120,7 +120,7 @@ site's product render.
    one or two sentences + optional action right of it (cols 8–12). No labels above headings.
    Axial (centred) compositions are reserved for the hero, the tunnel, the journey's steps and the finale.
 5. **Rhythm:** standard sections `--space-9`; the tunnel and finale take more room.
-6. **One action name per intent:** "Get an instant estimate" in page content (primary), "Book a Service" in
+6. **One action name per intent:** "Book your installation" in page content (primary), "Book a Service" in
    navigation, phone as the secondary action.
 7. **Header** (`src/components/layout/Header.tsx`): axial — logo left, text navigation centred on the axis
    (equal side columns), actions right. Exactly one pill (Book a Service); phone and nav are text links with the

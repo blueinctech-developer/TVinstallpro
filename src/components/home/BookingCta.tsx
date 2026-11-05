@@ -14,12 +14,12 @@ export async function BookingCta() {
           Ready when <span className={styles.ghost}>your wall is.</span>
         </h2>
         <p className={styles.lead} data-reveal="">
-          A few quick questions, about two minutes. You&apos;ll see your estimate before you send, and we&apos;ll call
-          to confirm a time.
+          Book in about two minutes. You&apos;ll see your estimate before you send, and we&apos;ll confirm a time that
+          suits you.
         </p>
         <div className={styles.actions} data-reveal="">
           <Link href={bookHref} className="btn btn--light">
-            Get an instant estimate
+            Book your installation
             <span className="btn-dot" aria-hidden="true">
               <Icon name="arrow" size={14} strokeWidth={2} />
             </span>
