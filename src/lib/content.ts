@@ -3,6 +3,7 @@ import { site } from "./site";
 
 // Photography is TV Install Pro's own, taken from tvinstallpro.ca (logos excluded), then graded,
 // upscaled and lightly sharpened into /public/images. Laser TV is the site's product render.
+// The booking-page cards (/public/images/services) are generated illustrations, one per service.
 
 export type Service = {
   slug: string;
@@ -13,6 +14,8 @@ export type Service = {
   body: string;
   icon: IconName;
   image: string;
+  /** picture for this service's card on the booking page; falls back to `image` */
+  cardImage?: string;
   /** TV mounting has an itemised estimator; everything else is quoted on request */
   estimator?: boolean;
   /** old WordPress booking URL, redirected to /book?service=<slug> (empty for services added in the admin) */
@@ -33,6 +36,7 @@ export const services: Service[] = [
     body: "We mount your TV on the wall or wherever you choose, on drywall, brick, concrete, tile or stone, with fixed, tilting or full-motion mounts and optional cable concealment.",
     icon: "tv",
     image: "/images/tv-marble-wall.jpg",
+    cardImage: "/images/services/tv-mounting.jpg",
     estimator: true,
     legacyPath: "/tv-installation-and-mounting-service",
   },
@@ -43,6 +47,7 @@ export const services: Service[] = [
     body: "Mantel mounts fixed above your fireplace for better viewing angles and more floor space, with no TV stand needed. Installed securely by our technicians.",
     icon: "fireplace",
     image: "/images/mantel-mount-fireplace.jpg",
+    cardImage: "/images/services/mantel-mount.jpg",
     legacyPath: "/mantel-mount-installation-service",
   },
   {
@@ -52,6 +57,7 @@ export const services: Service[] = [
     body: "We review the room's lighting and layout, place the laser TV away from windows at a comfortable viewing distance and height, then calibrate brightness, contrast and colour.",
     icon: "projector",
     image: "/images/laser-tv.jpg",
+    cardImage: "/images/services/laser-tv.jpg",
     legacyPath: "/laser-tv-installation-service",
   },
   {
@@ -61,6 +67,7 @@ export const services: Service[] = [
     body: "Precise, secure mounting and positioning for Samsung's Frame TV, so its art mode and bezels look the way they were designed to.",
     icon: "frame",
     image: "/images/samsung-frame.jpg",
+    cardImage: "/images/services/samsung-frame.jpg",
     legacyPath: "/samsung-frame-tv-installation-service",
   },
   {
@@ -70,6 +77,7 @@ export const services: Service[] = [
     body: "From dishwashers and refrigerators to stoves and ovens, installed according to how each appliance works and tailored to your home.",
     icon: "appliance",
     image: "/images/microwave-install.jpg",
+    cardImage: "/images/services/appliances.jpg",
     legacyPath: "/home-appliances-installation",
   },
   {
@@ -79,6 +87,7 @@ export const services: Service[] = [
     body: "Blinds and curtains in traditional, modern and custom styles and materials, installed for Canadian climates.",
     icon: "blinds",
     image: "/images/blinds-dining-room.jpg",
+    cardImage: "/images/services/blinds-curtains.jpg",
     legacyPath: "/blinds-and-curtains-installation",
   },
   {
@@ -88,6 +97,7 @@ export const services: Service[] = [
     body: "Customized garage storage and firmly installed shelving that turns a cluttered garage into an organized, functional space.",
     icon: "shelf",
     image: "/images/garage-shelving.jpg",
+    cardImage: "/images/services/garage-shelving.jpg",
     legacyPath: "/garage-shelves-organization",
   },
   {
@@ -97,6 +107,7 @@ export const services: Service[] = [
     body: "Gazebo and shed installation with durable structures and personalized design.",
     icon: "gazebo",
     image: "/images/gazebo-assembly.jpg",
+    cardImage: "/images/services/gazebos-sheds.jpg",
     legacyPath: "/gazebos-and-sheds-installation",
   },
   {
@@ -106,6 +117,7 @@ export const services: Service[] = [
     body: "Bold feature walls or subtle textures, with the full job handled: cleaning, priming and sizing the wall, then hanging.",
     icon: "wallpaper",
     image: "/images/wallpaper-bedroom.jpg",
+    cardImage: "/images/services/wallpaper.jpg",
     legacyPath: "/wallpaper-works",
   },
 ];

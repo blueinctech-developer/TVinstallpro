@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Choices, Field, Honeypot, SubmitOutcome } from "@/components/forms/Fields";
@@ -273,6 +274,7 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
                 label: s.title,
                 detail: s.short,
                 meta: servicePriceLabel(s, prices),
+                image: s.cardImage || s.image,
               }))}
             />
           )}
@@ -455,6 +457,11 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
 
       {/* Live estimate */}
       <aside id="estimate" className={`${styles.summary} on-dark`} aria-label="Your estimate">
+        {svc && (
+          <div className={styles.summaryImage}>
+            <Image key={svc.slug} src={svc.cardImage || svc.image} alt="" fill sizes="(max-width: 900px) 100vw, 400px" />
+          </div>
+        )}
         <div className={styles.summaryInner}>
           <p className={styles.summaryService}>{svc ? svc.title : "Choose a service"}</p>
           {isTv ? (

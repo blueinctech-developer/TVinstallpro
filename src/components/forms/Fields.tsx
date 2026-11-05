@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useId, type ReactNode } from "react";
 import { Icon } from "@/components/Icon";
 import { useSiteData } from "@/components/SiteData";
@@ -65,7 +66,8 @@ export function Field({ label, name, value, onChange, error, hint, required, cla
   );
 }
 
-type Option = { id: string; label: string; meta?: string; detail?: string };
+/** `image` turns the option into a picture card (photo on top, choice below). */
+type Option = { id: string; label: string; meta?: string; detail?: string; image?: string };
 
 type ChoicesProps = {
   legend: string;
@@ -102,7 +104,12 @@ export function Choices(props: ChoicesProps) {
       {hint && <p className={styles.hint}>{hint}</p>}
       <div className={styles.choiceGrid} style={{ "--cols": columns } as React.CSSProperties}>
         {options.map((o) => (
-          <label key={o.id} className={styles.choice} data-on={isOn(o.id) || undefined}>
+          <label key={o.id} className={styles.choice} data-on={isOn(o.id) || undefined} data-image={o.image ? "" : undefined}>
+            {o.image && (
+              <span className={styles.choiceImage} aria-hidden="true">
+                <Image src={o.image} alt="" fill sizes="(max-width: 700px) 100vw, 320px" />
+              </span>
+            )}
             <input
               type={props.multiple ? "checkbox" : "radio"}
               name={name}
