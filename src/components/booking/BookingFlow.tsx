@@ -376,6 +376,8 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
   const progress = steps.length > 1 ? index / (steps.length - 1) : 0;
   const showNext = step === "details" || step === "review" || step === "addons" || canContinue(step);
   const image = svc ? svc.cardImage || svc.image : undefined;
+  // A running total once there's something to add up; the review shows the full estimate instead.
+  const showRunning = isTv && total > 0 && step !== "review";
 
   /* Option lists for each question. */
   const opts = (list: Choice[], hints: Record<string, string> = {}): Option[] =>
@@ -412,7 +414,14 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
                 <Image src={image} alt="" fill sizes="56px" />
               </span>
             )}
-            <span>{svc.title}</span>
+            <span className={styles.chipText}>
+              <span>{svc.title}</span>
+              {showRunning && (
+                <span className={styles.chipTotal} aria-live="polite">
+                  Estimate so far <strong>{money(total)}</strong>
+                </span>
+              )}
+            </span>
             <button type="button" className={styles.chipChange} onClick={() => go("service", "back")}>
               Change
             </button>
@@ -675,6 +684,12 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
                   ? "Your answers appear here as you go. You'll see your estimate before you send anything."
                   : "Tell us about the job and we'll come back with a quote."
                 : "A few quick questions, then we'll confirm a time that suits you."}
+            </p>
+          )}
+          {showRunning && (
+            <p className={styles.running} aria-live="polite">
+              <span>Estimate so far</span>
+              <strong>{money(total)}</strong>
             </p>
           )}
           <p className={styles.summaryHelp}>

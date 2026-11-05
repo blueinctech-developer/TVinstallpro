@@ -91,6 +91,22 @@
   object-fit: cover;
 }
 
+.chipText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.chipTotal {
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.chipTotal strong {
+  color: var(--ink);
+}
+
 .chipChange {
   margin-left: auto;
   min-height: 44px;
@@ -396,6 +412,23 @@
     opacity: 0;
     transform: translateY(-4px);
   }
+}
+
+.running {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--dark-line);
+  font-size: var(--step--1);
+}
+
+.running strong {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  letter-spacing: -0.03em;
+  color: #fff;
 }
 
 .summaryEmpty,
