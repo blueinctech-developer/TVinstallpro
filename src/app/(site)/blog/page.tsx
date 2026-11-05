@@ -19,7 +19,7 @@ export default async function BlogIndex() {
   if (!posts.length) notFound();
   return (
     <>
-      <PageHero crumb="Tips & news" title="Tips" ghost="& news." lead="Advice on mounting, wiring and getting the most out of your setup." size="compact" />
+      <PageHero crumb="Tips & news" title="Tips" ghost="& news." lead="Practical advice on mounting, cable management and getting the most from your setup." size="compact" />
       <section className={page.section}>
         <div className="wrap">
           <div className={styles.list}>

@@ -3,7 +3,7 @@ export const site = {
   name: "TV Install Pro",
   url: "https://tvinstallpro.ca",
   description:
-    "Professional TV mounting and home installation in Ottawa, Gatineau and surrounding areas. Instant TV-mounting estimates, same-day installation available.",
+    "Professional TV mounting and home installation across Ottawa, Gatineau and surrounding areas. Clean, secure installations with same-day appointments often available.",
   phone: "(418) 334-7761",
   phoneHref: "tel:+14183347761",
   whatsapp: "https://wa.link/71bpsm",

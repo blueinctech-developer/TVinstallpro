@@ -15,7 +15,7 @@ export function Journey() {
         <SectionHead
           id="journey-title"
           title="From booking to switched on."
-          lead="Four steps from your request to a tested, working installation."
+          lead="A simple, dependable process, from your first click to the final test."
         />
         <div ref={ref} className={styles.track}>
           <span className={styles.axis} aria-hidden="true">

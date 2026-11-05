@@ -15,7 +15,7 @@ export async function Faq({ limit, title = "Questions, answered." }: { limit?: n
           title={title}
           lead={
             <>
-              Can&apos;t find yours? Call us on{" "}
+              Still have a question? Call us on{" "}
               <a href={site.phoneHref} className="link">
                 {site.phone}
               </a>

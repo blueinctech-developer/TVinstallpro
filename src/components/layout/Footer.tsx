@@ -28,7 +28,7 @@ export function Footer() {
             <Logo tone="inverse" />
           </Link>
           <p>
-            Professional TV mounting and home installation in {site.area}. Same-day installation is often available.
+            Professional TV mounting and home installation across {site.area}. Same-day appointments are often available.
           </p>
           <Link href={bookHref} className="btn btn--light">
             Book a Service
@@ -83,7 +83,7 @@ export function Footer() {
         <p>
           © {new Date().getFullYear()} {site.name}
         </p>
-        <p>Estimates are confirmed by your technician before work begins.</p>
+        <p>Final prices are confirmed by your technician before work begins.</p>
       </div>
     </footer>
   );
