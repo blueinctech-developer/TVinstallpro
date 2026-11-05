@@ -187,16 +187,12 @@ export function ServicesForm({ services, icons, media }: { services: Service[]; 
               Description
               <textarea className={styles.textarea} name="body" defaultValue={s.body} maxLength={2000} />
             </label>
+            {/* Prices are no longer shown on service listings; a saved "from" price is kept, not edited here. */}
+            <input type="hidden" name="priceFrom" value={s.priceFrom ?? ""} />
             {s.estimator ? (
-              <>
-                <input type="hidden" name="priceFrom" value="" />
-                <p className={`${styles.muted} ${styles.small}`}>Priced by the estimator: see the TV mounting prices tab.</p>
-              </>
+              <p className={`${styles.muted} ${styles.small}`}>Priced in the booking estimate: see the TV mounting prices tab.</p>
             ) : (
-              <label className={styles.control}>
-                From price (optional)
-                <input className={styles.input} name="priceFrom" defaultValue={s.priceFrom ?? ""} inputMode="decimal" placeholder="Leave empty to show “Quote”" style={{ maxWidth: 240 }} />
-              </label>
+              <p className={`${styles.muted} ${styles.small}`}>Quoted after the customer sends a request.</p>
             )}
             {s.custom ? (
               <>

@@ -6,7 +6,7 @@ import { Icon } from "@/components/Icon";
 import { useScrollProgress } from "@/components/motion/useScrollProgress";
 import { SectionHead } from "@/components/page/SectionHead";
 import { useSiteData } from "@/components/SiteData";
-import { countWord, servicePriceLabel } from "@/lib/site-defaults";
+import { countWord } from "@/lib/site-defaults";
 import styles from "./ServicesFan.module.css";
 
 /**
@@ -15,7 +15,7 @@ import styles from "./ServicesFan.module.css";
  * Followed by a plain, keyboard-friendly index of every service.
  */
 export function ServicesFan() {
-  const { services, prices } = useSiteData();
+  const { services } = useSiteData();
   const FAN = services; // every published service
   const ref = useScrollProgress<HTMLDivElement>("through");
 
@@ -25,10 +25,10 @@ export function ServicesFan() {
         <SectionHead
           id="services-title"
           title="Every wall. Every screen."
-          lead={`${countWord(services.length)} installation services from one team. TV mounting has an instant estimate; tell us about anything else and we'll quote it.`}
+          lead={`${countWord(services.length)} installation services from one team. Book TV mounting online in minutes; tell us about anything else and we'll quote it.`}
           action={
             <Link href="/services" className="link">
-              Full services &amp; pricing <Icon name="arrow" size={16} />
+              All services <Icon name="arrow" size={16} />
             </Link>
           }
         />
@@ -62,7 +62,6 @@ export function ServicesFan() {
                   <span className={styles.itemTitle}>{s.title}</span>
                   <span className={styles.itemShort}>{s.short}</span>
                 </span>
-                <span className={styles.itemPrice}>{servicePriceLabel(s, prices)}</span>
                 <Icon name="arrow" size={18} className={styles.itemArrow} />
               </Link>
             </li>

@@ -7,97 +7,69 @@ import { PageHero } from "@/components/page/PageHero";
 import { SectionHead } from "@/components/page/SectionHead";
 import page from "@/components/page/page.module.css";
 import { otherServices, services as defaultServices } from "@/lib/content";
-import { money, tvFromOf, type Choice } from "@/lib/pricing";
+import type { Choice } from "@/lib/pricing";
 import { getSiteData } from "@/lib/site-data";
 import { countWord } from "@/lib/site-defaults";
 import styles from "./services.module.css";
 
 export const metadata: Metadata = {
-  title: "Services & Pricing",
+  title: "Services",
   description:
-    "TV mounting prices by TV size, mount, wall type and extras, plus mantel mounts, laser TVs, Samsung Frame, appliances, blinds, garage shelving, gazebos and wallpaper.",
+    "TV mounting on any wall, with fixed, tilting or full-motion mounts and hidden cables, plus mantel mounts, laser TVs, Samsung Frame, appliances, blinds, garage shelving, gazebos and wallpaper.",
   alternates: { canonical: "/services" },
 };
 
+/** Option names only; prices appear once, in the booking estimate. Placeholder options ("Help me choose", "Other") are left out. */
+const named = (list: Choice[], skip: string[] = []) => list.filter((c) => !skip.includes(c.id)).map((c) => c.label);
+
 export default async function ServicesPage() {
   const { services, prices } = await getSiteData();
-  const { tvSizes, mounts, surfaces, concealment, addOns, maintenance, fireplaceSurcharge, takedownPrice, deviceSetupPrice, devicesBehindPrice, extraHelperPrice } = prices;
-  const tvFrom = tvFromOf(prices);
-  const tables: { title: string; rows: Choice[]; prefix?: string }[] = [
-  { title: "TV size", rows: tvSizes },
-  { title: "Wall mount", rows: mounts },
-  { title: "Wall surface", rows: surfaces, prefix: "+" },
-  { title: "Cable concealment", rows: concealment.filter((c) => c.id !== "none"), prefix: "+" },
-  { title: "Add-ons", rows: addOns, prefix: "+" },
-  { title: "Extended maintenance", rows: maintenance, prefix: "+" },
-];
+  const { tvSizes, mounts, surfaces, concealment, addOns } = prices;
+  const groups: { title: string; items: string[] }[] = [
+    { title: "TV sizes", items: named(tvSizes) },
+    { title: "Wall mounts", items: [...named(mounts, ["own", "help"]), "Or the mount you already have"] },
+    { title: "Wall surfaces", items: named(surfaces, ["unknown"]) },
+    { title: "Hidden cables", items: named(concealment, ["none", "help"]) },
+    { title: "Add-ons", items: named(addOns, ["other"]) },
+  ];
   const tv = services.find((s) => s.estimator) ?? defaultServices[0];
   const rest = services.filter((s) => s !== tv);
 
   return (
     <>
       <PageHero
-        crumb="Services & Pricing"
-        title="Services"
-        ghost="& pricing."
-        lead={`Itemised TV-mounting prices you can check before we arrive, and ${countWord(rest.length).toLowerCase()} more installation services.`}
+        crumb="Services"
+        title="Our"
+        ghost="services."
+        lead={`TV mounting on any wall, and ${countWord(rest.length).toLowerCase()} more installation services from the same team.`}
         tone="dark"
-        strip={
-          <dl className={styles.strip}>
-            <div className={styles.stripHead}>
-              <dt>TV mounting</dt>
-              <dd>by TV size</dd>
-            </div>
-            {tvSizes.map((s) => (
-              <div key={s.id} className={styles.stripCell}>
-                <dt>{s.label}</dt>
-                <dd>{money(s.price)}</dd>
-              </div>
-            ))}
-          </dl>
-        }
       >
         <Link href="/book?service=tv-mounting" className="btn">
-          Get an instant estimate
+          Book TV mounting
           <span className="btn-dot" aria-hidden="true">
             <Icon name="arrow" size={14} strokeWidth={2} />
           </span>
         </Link>
       </PageHero>
 
-      {/* ---------- TV mounting: full price list ---------- */}
+      {/* ---------- TV mounting: everything we can do ---------- */}
       <section id={tv.slug} className={`${page.section} ${styles.tv}`} aria-labelledby="tv-title">
         <div className="wrap grid">
           <div className={styles.tvIntro}>
             <h2 id="tv-title" className="display-2" data-reveal="">
               {tv.title}
             </h2>
-            <p className={styles.from} data-reveal="">
-              <span>From</span>
-              <strong>{money(tvFrom)}</strong>
-            </p>
             <p className={styles.tvBody} data-reveal="">
-              {tv.body} Your estimate is the TV size plus the options you choose.
+              {tv.body} Answer a few quick questions and you&apos;ll see your estimate before you send anything.
             </p>
             <ul className={styles.facts} data-reveal="">
-              <li>
-                Above a fireplace: <strong>+{money(fireplaceSurcharge)}</strong>
-              </li>
-              <li>
-                Extra helper for a 90″ – 100″ TV: <strong>+{money(extraHelperPrice)}</strong>
-              </li>
-              <li>
-                Existing TV takedown: <strong>+{money(takedownPrice)}</strong>
-              </li>
-              <li>
-                Device setup: <strong>+{money(deviceSetupPrice)}</strong> per device
-              </li>
-              <li>
-                Devices behind the TV: <strong>+{money(devicesBehindPrice)}</strong> per device
-              </li>
+              <li>Above-fireplace installs</li>
+              <li>Taking down your old TV</li>
+              <li>Setting up your devices, or hiding them behind the TV</li>
+              <li>A second technician for 90″ – 100″ TVs</li>
             </ul>
             <Link href="/book?service=tv-mounting" className="btn" data-reveal="">
-              Get an instant estimate
+              Book TV mounting
               <span className="btn-dot" aria-hidden="true">
                 <Icon name="arrow" size={14} strokeWidth={2} />
               </span>
@@ -105,23 +77,17 @@ export default async function ServicesPage() {
           </div>
 
           <div className={styles.tables}>
-            {tables.map((t) => (
-              <div key={t.title} className={styles.table} data-reveal="">
-                <h3>{t.title}</h3>
-                <dl>
-                  {t.rows.map((r) => (
-                    <div key={r.id}>
-                      <dt>
-                        {r.label}
-                        {r.price && r.note ? <span className={styles.rowNote}>{r.note}</span> : null}
-                      </dt>
-                      <dd>{r.price ? `${t.prefix ?? ""}${money(r.price)}` : r.note ? r.note : "—"}</dd>
-                    </div>
+            {groups.map((g) => (
+              <div key={g.title} className={styles.table} data-reveal="">
+                <h3>{g.title}</h3>
+                <ul>
+                  {g.items.map((item) => (
+                    <li key={item}>{item}</li>
                   ))}
-                </dl>
+                </ul>
               </div>
             ))}
-            <p className={styles.tableNote}>Prices in CAD. Estimates are confirmed by your technician before work begins.</p>
+            <p className={styles.tableNote}>Your technician confirms the final price before work begins.</p>
           </div>
         </div>
       </section>
@@ -132,7 +98,7 @@ export default async function ServicesPage() {
           <SectionHead
             id="more-title"
             title="Beyond the TV."
-            lead={`${countWord(rest.length)} more installation services. Tell us about the job and we'll come back with a price.`}
+            lead={`${countWord(rest.length)} more installation services. Tell us about the job and we'll come back with a quote.`}
           />
           <div className={styles.rows}>
             {rest.map((s, i) => (
@@ -146,7 +112,6 @@ export default async function ServicesPage() {
                   </span>
                   <h3>{s.title}</h3>
                   <p>{s.body}</p>
-                  <p className={styles.quote}>{s.priceFrom ? `From ${money(s.priceFrom)}` : "Quoted on request"}</p>
                   <Link href={`/book?service=${s.slug}`} className="link">
                     Request a quote <Icon name="arrow" size={16} />
                   </Link>

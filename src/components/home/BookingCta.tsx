@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
-import { money, tvFromOf } from "@/lib/pricing";
 import { getSiteData } from "@/lib/site-data";
 import { bookHref } from "@/lib/site";
 import styles from "./BookingCta.module.css";
 
 export async function BookingCta() {
-  const { business: site, prices } = await getSiteData();
-  const tvFrom = tvFromOf(prices);
+  const { business: site } = await getSiteData();
   return (
     <section className={`${styles.cta} on-dark`} data-header="dark" aria-labelledby="cta-title">
       <span className={styles.beam} aria-hidden="true" />
@@ -16,8 +14,8 @@ export async function BookingCta() {
           Ready when <span className={styles.ghost}>your wall is.</span>
         </h2>
         <p className={styles.lead} data-reveal="">
-          Build an itemised estimate in a couple of minutes, from {money(tvFrom)}. We&apos;ll call to confirm a time and
-          the final price.
+          A few quick questions, about two minutes. You&apos;ll see your estimate before you send, and we&apos;ll call
+          to confirm a time.
         </p>
         <div className={styles.actions} data-reveal="">
           <Link href={bookHref} className="btn btn--light">
