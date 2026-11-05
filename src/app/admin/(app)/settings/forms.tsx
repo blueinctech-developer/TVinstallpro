@@ -103,7 +103,7 @@ export function EmailForm({ e }: { e: EmailSettings }) {
         <Text label="Sender name" name="fromName" value={e.fromName} required />
         <Text label="Sender address" name="fromEmail" value={e.fromEmail} type="email" required hint="Must be allowed by your SMTP provider." />
       </div>
-      <Text label="Customers' replies go to" name="replyTo" value={e.replyTo} type="email" hint="Leave empty for a no-reply email (customers are pointed to your phone and WhatsApp instead)." />
+      <Text label="Customers' replies go to" name="replyTo" value={e.replyTo} type="email" hint="Leave empty to send customers' replies to the first alert address above." />
       <label className={styles.formRow} style={{ alignItems: "center", fontWeight: 600 }}>
         <input type="checkbox" name="confirmToCustomer" defaultChecked={e.confirmToCustomer} style={{ width: 20, height: 20 }} />
         Email customers a branded confirmation of their booking, message or partner request
