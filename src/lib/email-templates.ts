@@ -241,7 +241,7 @@ export function customerEmail(d: RequestEmailData) {
       ${p(intro)}
       ${d.kind === "booking" ? p("Your appointment is confirmed once we've spoken, so keep an eye on your phone.", `padding-top:10px;color:${C.muted};font-size:14px`) : ""}
       <div style="padding-top:24px">${button(b.phoneHref, `Call us on ${b.phone}`)}</div>
-      ${p(`or <a href="${esc(b.whatsapp)}" style="color:${C.brand};font-weight:700;text-decoration:none">message us on WhatsApp</a>`, "padding-top:12px;font-size:14px")}
+      ${p(`or <a href="${esc(b.whatsapp)}" style="color:${C.brand};font-weight:700;text-decoration:none">message us on WhatsApp</a>. You can also reply to this email.`, "padding-top:12px;font-size:14px")}
     </td></tr>`,
     d.kind === "booking" && (d.service || d.tv)
       ? divider + section(heading("Booking summary") + serviceRow(d) + (d.tv ? `<div style="padding-top:16px">${rowsTable(d.tv.answers)}</div>` : "") + estimateBlock(d, { breakdown: true }))
@@ -250,9 +250,9 @@ export function customerEmail(d: RequestEmailData) {
     divider + section(heading("Your details") + rowsTable(contactRows(d))),
   ].join("");
 
-  const footer = `Questions? Call <a href="${esc(b.phoneHref)}" style="color:${C.muted}">${esc(b.phone)}</a> or <a href="${esc(b.whatsapp)}" style="color:${C.muted}">message us on WhatsApp</a>.<br>
+  const footer = `Questions? Just reply to this email, call <a href="${esc(b.phoneHref)}" style="color:${C.muted}">${esc(b.phone)}</a> or <a href="${esc(b.whatsapp)}" style="color:${C.muted}">message us on WhatsApp</a>.<br>
     ${esc(b.name)} · ${esc(b.area)}<br>
-    You're receiving this because you contacted us at <a href="${esc(b.url)}" style="color:${C.muted}">${esc(b.url.replace(/^https?:\/\//, ""))}</a>. Please don't reply to this email.`;
+    You're receiving this because you contacted us at <a href="${esc(b.url)}" style="color:${C.muted}">${esc(b.url.replace(/^https?:\/\//, ""))}</a>.`;
 
   const html = layout({ preheader: d.kind === "booking" ? "We'll be in touch shortly to confirm your appointment." : plain(intro), label: d.kind === "booking" ? `Booking ${ref(d)}` : kindWord[d.kind], body, footer, logoUrl: `${b.url}/email-logo.png`, homeUrl: b.url });
 
@@ -269,7 +269,7 @@ export function customerEmail(d: RequestEmailData) {
     ...messageRows(d).map((r) => `${r.label}: ${r.value}`),
     ...contactRows(d).map((r) => `${r.label}: ${r.value}`),
     "",
-    `Questions? Call ${b.phone} or message us on WhatsApp: ${b.whatsapp}`,
+    `Questions? Just reply to this email, call ${b.phone} or message us on WhatsApp: ${b.whatsapp}`,
     b.name,
   ].join("\n");
 

@@ -116,6 +116,8 @@ export async function sendRequestEmails(r: {
     await sendMail({ to: addr, ...alert, replyTo: r.email, requestId: r.id });
   }
   if (s.confirmToCustomer && r.email) {
-    await sendMail({ to: r.email, ...customerEmail(data), replyTo: s.replyTo || undefined, requestId: r.id });
+    // Sent from no-reply, but a reply reaches the business: the saved reply-to address, else the first alert inbox.
+    const replyTo = s.replyTo || s.alertsTo.split(/[,;\s]+/).find((x) => x.includes("@"));
+    await sendMail({ to: r.email, ...customerEmail(data), replyTo, requestId: r.id });
   }
 }
