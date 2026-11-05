@@ -62,12 +62,13 @@ export const defaultBusiness: Business = {
 export const defaultTracking: Tracking = { ga4Id: "", gtmId: "", headCode: "", bodyCode: "" };
 
 export const defaultEmail: EmailSettings = {
-  alertsTo: "",
+  // Owner's inbox (2026-11-05). Also used whenever the admin's list is left empty, so a request never goes unannounced.
+  alertsTo: "evangdavesca@gmail.com",
   partnerAlertsTo: "",
   replyTo: "",
   fromName: site.name,
-  fromEmail: "support@tvinstallpro.ca",
-  confirmToCustomer: false,
+  fromEmail: "noreply@tvinstallpro.ca",
+  confirmToCustomer: true,
 };
 
 export const phoneHrefOf = (phone: string) => `tel:+1${phone.replace(/\D/g, "").slice(-10)}`;

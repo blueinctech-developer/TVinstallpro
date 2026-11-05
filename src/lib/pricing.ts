@@ -163,3 +163,28 @@ export const estimateTotal = (s: TvSelection, p: PriceBook = defaultPrices) => e
 export const money = (n: number) =>
   n.toLocaleString("en-CA", { style: "currency", currency: "CAD", minimumFractionDigits: n % 1 ? 2 : 0 });
 
+
+/** The customer's TV answers in plain words (no prices), for emails and the admin. */
+export function describeTv(s: TvSelection, p: PriceBook = defaultPrices): { label: string; value: string }[] {
+  const name = (list: Choice[], id?: string) => list.find((c) => c.id === id)?.label;
+  const count = (n: number) => (n === 0 ? "None" : n >= 3 ? "3+" : String(n));
+  const yes = (v?: boolean) => (v === undefined ? undefined : v ? "Yes" : "No");
+  const extras = s.addOns
+    .map((id) => (id === "other" && s.otherAddOn?.trim() ? s.otherAddOn.trim() : name(p.addOns, id)))
+    .filter(Boolean)
+    .join(", ");
+  const rows: [string, string | undefined][] = [
+    ["TV size", name(p.tvSizes, s.size)],
+    ["Mount", name(p.mounts, s.mount)],
+    ["Above a fireplace", yes(s.fireplace)],
+    ["Wall", name(p.surfaces, s.surface)],
+    ["Hidden cords", s.hideCords === undefined ? undefined : s.hideCords ? (name(p.concealment, s.conceal) ?? "Yes") : "No"],
+    ["Extras", extras || "None"],
+    ["Take down a TV", yes(s.takedown)],
+    ["Devices to set up", count(s.deviceSetup ?? 0)],
+    ["Devices behind the TV", count(s.devicesBehind ?? 0)],
+    ["Another TV", yes(s.anotherTv)],
+    ["Care plan", name(p.maintenance, s.maintenance)],
+  ];
+  return rows.filter((r): r is [string, string] => !!r[1]).map(([label, value]) => ({ label, value }));
+}

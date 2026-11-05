@@ -57,7 +57,7 @@ export function ContactForm() {
     f.setBusy(true);
     const summary = [`Name: ${v.first} ${v.last}`, `Phone: ${v.phone}`, `Email: ${v.email}`, `City / area: ${v.area || "—"}`, "", v.message].join("\n");
     const r = await submitEnquiry(
-      { kind: "contact", name: `${v.first} ${v.last}`, email: v.email, phone: v.phone, summary, details: { area: v.area }, website: v.website },
+      { kind: "contact", name: `${v.first} ${v.last}`, email: v.email, phone: v.phone, summary, details: { area: v.area, message: v.message }, website: v.website },
       "Website enquiry",
       businessEmail,
     );
@@ -134,7 +134,7 @@ export function PartnerForm() {
         email: v.email,
         phone: v.phone,
         summary,
-        details: { address, preferred: v.preferred, time: v.time },
+        details: { address, preferred: v.preferred, time: v.time, comments: v.comments },
         website: v.website,
       },
       "Partnership request",

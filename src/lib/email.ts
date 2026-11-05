@@ -1,7 +1,9 @@
 import "server-only";
 import nodemailer, { type Transporter } from "nodemailer";
 import { db } from "@/lib/db";
-import { getEmailSettings } from "@/lib/site-data";
+import { alertEmail, customerEmail, type EmailKind, type RequestEmailData } from "@/lib/email-templates";
+import { describeTv, emptyTvSelection, estimateLines, estimateNotes, estimateTotal, type TvSelection } from "@/lib/pricing";
+import { getEmailSettings, getSiteData } from "@/lib/site-data";
 
 /*
  * Outgoing email (what WP Mail SMTP did on the old site). Works with any SMTP server, e.g.
@@ -30,7 +32,7 @@ function transporter() {
   return transport;
 }
 
-type Mail = { to: string; subject: string; text: string; replyTo?: string; requestId?: number };
+type Mail = { to: string; subject: string; text: string; html?: string; replyTo?: string; requestId?: number };
 
 /** Sends one email and logs the outcome. Never throws: a failed email must not fail the request that triggered it. */
 export async function sendMail(m: Mail): Promise<{ ok: boolean; error?: string }> {
@@ -58,6 +60,7 @@ export async function sendMail(m: Mail): Promise<{ ok: boolean; error?: string }
       to: m.to,
       subject: m.subject,
       text: m.text,
+      html: m.html,
       replyTo: m.replyTo,
     });
     await log("sent");
@@ -70,42 +73,49 @@ export async function sendMail(m: Mail): Promise<{ ok: boolean; error?: string }
   }
 }
 
-const kindLabel = { booking: "Booking request", contact: "Contact message", partner: "Partnership request" } as const;
-
-/** New-request alert to the business (and, if enabled, a confirmation to the customer). */
+/** New-request alert to the business, and a branded confirmation to the customer. */
 export async function sendRequestEmails(r: {
   id: number;
-  kind: keyof typeof kindLabel;
+  kind: EmailKind;
   name: string;
   email: string;
   phone: string;
   summary: string;
+  details?: Record<string, unknown>;
   origin: string;
 }) {
-  const s = await getEmailSettings();
+  const [s, siteData] = await Promise.all([getEmailSettings(), getSiteData()]);
+  const details = r.details ?? {};
+  const svc = siteData.services.find((x) => x.slug === details.service);
+  const tvSel = svc?.estimator && details.tv && typeof details.tv === "object" ? ({ ...emptyTvSelection, ...(details.tv as Partial<TvSelection>) } as TvSelection) : undefined;
+  const base = siteData.business.url;
+  const data: RequestEmailData = {
+    ...r,
+    details,
+    business: siteData.business,
+    service: svc ? { title: svc.title, image: new URL(svc.cardImage || svc.image, base).toString(), estimator: svc.estimator } : undefined,
+    // Worked out again here from the saved prices, never taken from the browser.
+    tv: tvSel
+      ? {
+          answers: describeTv(tvSel, siteData.prices),
+          lines: estimateLines(tvSel, siteData.prices),
+          notes: estimateNotes(tvSel, siteData.prices),
+          total: estimateTotal(tvSel, siteData.prices),
+        }
+      : undefined,
+    adminUrl: `${r.origin}/admin/requests/${r.id}`,
+  };
+
   // Routing matches the old site: partner requests can go to their own address.
   const to = (r.kind === "partner" && s.partnerAlertsTo ? s.partnerAlertsTo : s.alertsTo)
     .split(/[,;\s]+/)
     .map((x) => x.trim())
     .filter((x) => x.includes("@"));
-  const link = `${r.origin}/admin/requests/${r.id}`;
+  const alert = alertEmail(data);
   for (const addr of to) {
-    await sendMail({
-      to: addr,
-      subject: `${kindLabel[r.kind]} from ${r.name}`,
-      text: `${kindLabel[r.kind]} #${r.id}\n\n${r.summary}\n\nOpen it in the admin: ${link}`,
-      replyTo: r.email,
-      requestId: r.id,
-    });
+    await sendMail({ to: addr, ...alert, replyTo: r.email, requestId: r.id });
   }
-  // Bookings and partner requests get a copy; the old contact form never sent one.
-  if (s.confirmToCustomer && r.email && r.kind !== "contact") {
-    await sendMail({
-      to: r.email,
-      subject: `We received your request – ${s.fromName}`,
-      replyTo: s.replyTo || undefined,
-      text: `Hi ${r.name.split(" ")[0]},\n\nThanks for contacting ${s.fromName}. We've received your request and will get back to you soon to confirm the details. This isn't a confirmed appointment yet.\n\nWhat you sent:\n\n${r.summary}\n\n${s.fromName}`,
-      requestId: r.id,
-    });
+  if (s.confirmToCustomer && r.email) {
+    await sendMail({ to: r.email, ...customerEmail(data), replyTo: s.replyTo || undefined, requestId: r.id });
   }
 }

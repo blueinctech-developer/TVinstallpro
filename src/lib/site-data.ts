@@ -72,7 +72,8 @@ export async function serviceTitler() {
 
 export const getTracking = cache(async (): Promise<Tracking> => ({ ...defaultTracking, ...((await getSetting<Partial<Tracking>>("tracking")) ?? {}) }));
 
-export const getEmailSettings = async (): Promise<EmailSettings> => ({
-  ...defaultEmail,
-  ...((await getSetting<Partial<EmailSettings>>("email")) ?? {}),
-});
+export const getEmailSettings = async (): Promise<EmailSettings> => {
+  const s = { ...defaultEmail, ...((await getSetting<Partial<EmailSettings>>("email")) ?? {}) };
+  // An empty alert list would mean nobody hears about new requests: fall back to the owner's inbox.
+  return s.alertsTo.trim() ? s : { ...s, alertsTo: defaultEmail.alertsTo };
+};
