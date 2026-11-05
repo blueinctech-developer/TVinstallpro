@@ -243,4 +243,18 @@ export const migrations: Migration[] = [
       update activity_log set meta = (meta #>> '{}')::jsonb where jsonb_typeof(meta) = 'string';
     `,
   },
+  {
+    version: 4,
+    name: "two-factor sign-in for admins",
+    // Additive only. A session passes 2FA once mfa_at is set; existing sessions start without it,
+    // so every signed-in admin is asked for a code (or to set 2FA up) on their next page.
+    sql: `
+      alter table admin_users add column if not exists totp_secret text;
+      alter table admin_users add column if not exists totp_enabled_at timestamptz;
+      alter table admin_users add column if not exists totp_last_step bigint;
+      alter table admin_users add column if not exists recovery_codes jsonb not null default '[]';
+      alter table admin_sessions add column if not exists mfa_at timestamptz;
+      alter table admin_sessions add column if not exists totp_pending text;
+    `,
+  },
 ];

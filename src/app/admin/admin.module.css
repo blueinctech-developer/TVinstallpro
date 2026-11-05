@@ -742,7 +742,8 @@
   box-shadow: var(--shadow-float);
 }
 
-.loginCard svg {
+/* The logo only (icons and the 2FA QR code keep their own size). */
+.loginCard > svg {
   width: 132px;
   height: auto;
 }

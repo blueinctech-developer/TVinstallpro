@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { endSession, logActivity, requireUser, startSession, currentUser } from "@/lib/admin/auth";
+import { endSession, logActivity, requireUser, sessionUser, startSession } from "@/lib/admin/auth";
 import { dummyHash, hashPassword, needsRehash, verifyPassword } from "@/lib/admin/password";
 import { addNote, setStatus } from "@/lib/admin/requests";
 import { isStatus } from "@/lib/admin/vocab";
@@ -42,11 +42,12 @@ export async function login(_: LoginState, form: FormData): Promise<LoginState> 
   }
   await startSession(user.id);
   await logActivity(user.id, "signed in", undefined, { ip });
+  // Password accepted; requireUser() sends them on to 2FA (set-up or code) before anything else.
   redirect("/admin");
 }
 
 export async function logout() {
-  const u = await currentUser();
+  const u = await sessionUser();
   await endSession();
   if (u) await logActivity(u.id, "signed out");
   redirect("/admin/login");

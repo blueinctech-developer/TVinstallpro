@@ -20,6 +20,7 @@ type UserRow = {
   last_login_at: Date | null;
   pending_setup: boolean;
   wp_password: boolean;
+  mfa: boolean;
 };
 
 export default async function UsersPage() {
@@ -27,7 +28,8 @@ export default async function UsersPage() {
   const users = await (await db()).query<UserRow>(
     `select id, email, name, username, role, disabled, source, created_at, last_login_at,
             password_hash = '!' as pending_setup,
-            password_hash not like 'scrypt$%' and password_hash <> '!' as wp_password
+            password_hash not like 'scrypt$%' and password_hash <> '!' as wp_password,
+            totp_enabled_at is not null as mfa
        from admin_users order by disabled, role = 'admin' desc, name`,
   );
 
@@ -40,6 +42,7 @@ export default async function UsersPage() {
           </h1>
           <p className={styles.sub}>
             Who can sign in to the admin. Administrators manage everything; Staff handle requests and content; Read-only can only look.
+            Everyone signs in with a password and a code from an authenticator app.
           </p>
         </div>
       </div>
@@ -75,6 +78,11 @@ export default async function UsersPage() {
                             Disabled
                           </span>
                         )}
+                        {!u.disabled && !u.pending_setup && (
+                          <span className={styles.badge} data-tone={u.mfa ? "info" : "brand"}>
+                            {u.mfa ? "2FA on" : "2FA set-up due at next sign-in"}
+                          </span>
+                        )}
                         {u.pending_setup && (
                           <span className={styles.badge} data-tone="brand">
                             Hasn&apos;t set a password yet
@@ -93,7 +101,7 @@ export default async function UsersPage() {
                       <div className={styles.small}>Added {fmtDate(u.created_at)}</div>
                     </td>
                     <td>
-                      <UserRowActions id={u.id} role={u.role} disabled={u.disabled} isMe={u.id === me.id} />
+                      <UserRowActions id={u.id} role={u.role} disabled={u.disabled} isMe={u.id === me.id} mfa={u.mfa} />
                     </td>
                   </tr>
                 ))}

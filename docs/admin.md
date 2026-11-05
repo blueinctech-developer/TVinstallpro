@@ -94,3 +94,21 @@ npm run import:wp-backup -- --db "<…-db.gz>" --uploads "<unzipped uploads fold
    (`support@tvinstallpro.ca`) can be reused with SES SMTP credentials.
 4. Media: Vercel → Storage → Create → Blob, connect it to the project (adds `BLOB_READ_WRITE_TOKEN`), redeploy.
 5. Optional: `ENQUIRY_WEBHOOK_URL` forwards a copy of each new request (e.g. to Zapier or a CRM).
+
+## Two-factor sign-in (required for everyone)
+
+Every admin account signs in with a password **and** a 6-digit code from an authenticator app
+(Google Authenticator, Microsoft Authenticator, 1Password…). There is no way to switch it off.
+
+- **First time:** after the password, `/admin/2fa/setup` shows a QR code. Scan it, enter one code, and save the
+  10 recovery codes shown once (copy or download). Existing accounts get this on their next visit, including
+  sessions that were already signed in when 2FA shipped.
+- **Every sign-in after that:** `/admin/2fa` asks for the current code, or a recovery code (each works once).
+- **Lost phone:** another administrator opens Users → **Reset 2FA**. That signs the person out and they set
+  2FA up again at their next sign-in. Nobody can reset their own.
+- **How it's enforced:** `requireUser()` refuses any session without `mfa_at`, so every admin page, action and
+  the CSV export are covered. Codes are rate-limited (8 per account and 30 per IP per 15 minutes), a code can't
+  be used twice, and recovery codes are stored only as SHA-256 hashes. Sign-ins, failures, set-ups and resets
+  go to the activity log.
+- **Storage note:** the authenticator secret is stored as-is in `admin_users.totp_secret` (the app needs the
+  original to check codes). Encrypting it at rest would need a new secret key in the hosting environment.
