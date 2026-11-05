@@ -161,7 +161,7 @@ export const work = [
 export const faqsFor = (b: { warrantyMonths: number; componentsIncluded: number }) => [
   {
     q: "How much does TV mounting cost?",
-    a: "Mounting starts at $60.99 for TVs up to 31″ and goes up by TV size. Mounts, wall type, cable concealment and extras are itemised in our instant estimate on the booking page. The technician confirms the final price.",
+    a: "Mounting starts at $79.99 for TVs up to 31″ and goes up by TV size. Mounts, wall type, cable concealment and extras are itemised in our instant estimate on the booking page. The technician confirms the final price.",
   },
   {
     q: "What kinds of walls can you mount on?",

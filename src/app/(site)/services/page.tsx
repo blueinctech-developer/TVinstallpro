@@ -21,13 +21,13 @@ export const metadata: Metadata = {
 
 export default async function ServicesPage() {
   const { services, prices } = await getSiteData();
-  const { tvSizes, mounts, surfaces, concealment, addOns, maintenance, fireplaceSurcharge, takedownPrice, deviceSetupPrice, devicesBehindPrice } = prices;
+  const { tvSizes, mounts, surfaces, concealment, addOns, maintenance, fireplaceSurcharge, takedownPrice, deviceSetupPrice, devicesBehindPrice, extraHelperPrice } = prices;
   const tvFrom = tvFromOf(prices);
   const tables: { title: string; rows: Choice[]; prefix?: string }[] = [
   { title: "TV size", rows: tvSizes },
   { title: "Wall mount", rows: mounts },
   { title: "Wall surface", rows: surfaces, prefix: "+" },
-  { title: "Cable concealment", rows: concealment },
+  { title: "Cable concealment", rows: concealment.filter((c) => c.id !== "none"), prefix: "+" },
   { title: "Add-ons", rows: addOns, prefix: "+" },
   { title: "Extended maintenance", rows: maintenance, prefix: "+" },
 ];
@@ -84,13 +84,16 @@ export default async function ServicesPage() {
                 Above a fireplace: <strong>+{money(fireplaceSurcharge)}</strong>
               </li>
               <li>
+                Extra helper for a 90″ – 100″ TV: <strong>+{money(extraHelperPrice)}</strong>
+              </li>
+              <li>
                 Existing TV takedown: <strong>+{money(takedownPrice)}</strong>
               </li>
               <li>
-                Device setup: <strong>{money(deviceSetupPrice)}</strong> per device
+                Device setup: <strong>+{money(deviceSetupPrice)}</strong> per device
               </li>
               <li>
-                Devices behind the TV: <strong>{money(devicesBehindPrice)}</strong> per device
+                Devices behind the TV: <strong>+{money(devicesBehindPrice)}</strong> per device
               </li>
             </ul>
             <Link href="/book?service=tv-mounting" className="btn" data-reveal="">
@@ -108,10 +111,11 @@ export default async function ServicesPage() {
                 <dl>
                   {t.rows.map((r) => (
                     <div key={r.id}>
-                      <dt>{r.label}</dt>
-                      <dd>
-                        {r.price ? `${t.prefix ?? ""}${money(r.price)}${r.note ? ` ${r.note}` : ""}` : r.note ? r.note : "—"}
-                      </dd>
+                      <dt>
+                        {r.label}
+                        {r.price && r.note ? <span className={styles.rowNote}>{r.note}</span> : null}
+                      </dt>
+                      <dd>{r.price ? `${t.prefix ?? ""}${money(r.price)}` : r.note ? r.note : "—"}</dd>
                     </div>
                   ))}
                 </dl>

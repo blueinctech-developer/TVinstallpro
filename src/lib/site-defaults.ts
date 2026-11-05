@@ -94,6 +94,7 @@ export function mergePrices(saved?: Partial<PriceBook> | null): PriceBook {
     takedownPrice: num(s.takedownPrice, d.takedownPrice),
     deviceSetupPrice: num(s.deviceSetupPrice, d.deviceSetupPrice),
     devicesBehindPrice: num(s.devicesBehindPrice, d.devicesBehindPrice),
+    extraHelperPrice: num(s.extraHelperPrice, d.extraHelperPrice),
     maintenance: mergeChoices(d.maintenance, s.maintenance),
   };
 }

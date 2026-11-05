@@ -6,17 +6,35 @@ import { Choices, Field, Honeypot, SubmitOutcome } from "@/components/forms/Fiel
 import { Icon } from "@/components/Icon";
 import { useSiteData } from "@/components/SiteData";
 import { servicePriceLabel } from "@/lib/site-defaults";
-import { emptyTvSelection, estimateLines, estimateTotal, money, type TvSelection } from "@/lib/pricing";
+import { emptyTvSelection, estimateLines, estimateNotes, estimateTotal, helperSizeIds, money, type Choice, type TvSelection } from "@/lib/pricing";
 import { submitEnquiry, type SubmitResult } from "@/lib/submit";
 import styles from "./BookingFlow.module.css";
 
-type StepId = "service" | "setup" | "wall" | "extras" | "details" | "review";
+type StepId =
+  | "service"
+  | "size"
+  | "mount"
+  | "wall"
+  | "conceal"
+  | "addons"
+  | "takedown"
+  | "devices"
+  | "another"
+  | "maintenance"
+  | "details"
+  | "review";
 
 const TITLES: Record<StepId, string> = {
   service: "What do you need installed?",
-  setup: "Your TV and mount",
-  wall: "Your wall and wires",
-  extras: "Any extras?",
+  size: "What size is your TV?",
+  mount: "What type of wall mount do you want?",
+  wall: "Your wall and cords",
+  conceal: "How should we hide the cords?",
+  addons: "Would you like to add any products or services?",
+  takedown: "Does your current TV need to be taken down?",
+  devices: "Any devices to set up?",
+  another: "Would you like to install another TV?",
+  maintenance: "Would you like an extra care maintenance plan?",
   details: "Your details",
   review: "Review your request",
 };
@@ -35,20 +53,25 @@ const counts = [
   { id: "3", label: "3+" },
 ];
 
+/** "+$40", or the option's note when it has no price ("Quoted separately"). */
+const extra = (c: Choice) => (c.price ? `+${money(c.price)}${c.note ? ` ${c.note}` : ""}` : c.note);
+
 const emailOk = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 const phoneOk = (v: string) => v.replace(/\D/g, "").length >= 10;
 
 export function BookingFlow({ initialService }: { initialService?: string }) {
   // Services, prices and contact details as saved in the admin.
   const { business: site, services, prices } = useSiteData();
-  const { tvSizes, mounts, fireplaceSurcharge, surfaces, concealment, addOns, takedownPrice, deviceSetupPrice, devicesBehindPrice, maintenance } = prices;
+  const { tvSizes, mounts, fireplaceSurcharge, surfaces, addOns, takedownPrice, deviceSetupPrice, devicesBehindPrice, extraHelperPrice, maintenance } = prices;
+  // "No concealment" is now the Yes/No question, so an older saved list may still carry it.
+  const concealment = prices.concealment.filter((c) => c.id !== "none");
   const serviceBySlug = (slug?: string | null) => services.find((x) => x.slug === slug);
   const preset = serviceBySlug(initialService)?.slug ?? "";
   const [service, setService] = useState(preset);
   const [tv, setTv] = useState<TvSelection>({ ...emptyTvSelection, takedown: false });
   const [d, setD] = useState<Details>(emptyDetails);
   const [honey, setHoney] = useState("");
-  const [step, setStep] = useState<StepId>(preset ? (preset === "tv-mounting" ? "setup" : "details") : "service");
+  const [step, setStep] = useState<StepId>(preset ? (preset === "tv-mounting" ? "size" : "details") : "service");
   const [dir, setDir] = useState<"fwd" | "back">("fwd");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
@@ -58,12 +81,26 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
 
   const isTv = service === "tv-mounting";
   const steps: StepId[] = isTv
-    ? ["service", "setup", "wall", "extras", "details", "review"]
+    ? [
+        "service",
+        "size",
+        "mount",
+        "wall",
+        ...(tv.hideCords ? (["conceal"] as const) : []),
+        "addons",
+        "takedown",
+        "devices",
+        "another",
+        "maintenance",
+        "details",
+        "review",
+      ]
     : ["service", "details", "review"];
   const index = steps.indexOf(step);
   const svc = serviceBySlug(service);
   const lines = useMemo(() => estimateLines(tv, prices), [tv, prices]);
   const total = estimateTotal(tv, prices);
+  const notes = useMemo(() => estimateNotes(tv, prices), [tv, prices]);
 
   // Move focus to the new step's heading (not on first load).
   useEffect(() => {
@@ -81,15 +118,15 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
   const validate = (id: StepId): Record<string, string> => {
     const e: Record<string, string> = {};
     if (id === "service" && !service) e.service = "Choose a service to continue.";
-    if (id === "setup") {
-      if (!tv.size) e.size = "Choose your TV size.";
-      if (!tv.mount) e.mount = "Choose a mount, or tell us you already have one.";
-    }
+    if (id === "size" && !tv.size) e.size = "Choose your TV size.";
+    if (id === "mount" && !tv.mount) e.mount = "Choose a mount, or tell us you already have one.";
     if (id === "wall") {
       if (tv.fireplace === undefined) e.fireplace = "Let us know if it's above a fireplace.";
-      if (!tv.surface) e.surface = "Choose the wall surface (or “not sure”).";
-      if (!tv.conceal) e.conceal = "Choose how you'd like the wires handled.";
+      if (!tv.surface) e.surface = "Choose the wall surface (or “I don't know”).";
+      if (tv.hideCords === undefined) e.hideCords = "Let us know if you'd like the cords hidden.";
     }
+    if (id === "conceal" && !concealment.some((c) => c.id === tv.conceal)) e.conceal = "Choose how you'd like the cords hidden.";
+    if (id === "maintenance" && !tv.maintenance) e.maintenance = "Choose a plan, or no additional coverage.";
     if (id === "details") {
       if (!d.first.trim()) e.first = "Enter your first name.";
       if (!d.last.trim()) e.last = "Enter your last name.";
@@ -116,7 +153,7 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
       return;
     }
     if (step === "service") {
-      go(isTv ? "setup" : "details", "fwd");
+      go(isTv ? "size" : "details", "fwd");
       return;
     }
     go(steps[index + 1], "fwd");
@@ -136,6 +173,7 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
     ];
     if (isTv) {
       out.push("", "Estimate:", ...lines.map((l) => `  ${l.label}: ${money(l.amount)}`), `  Estimated total: ${money(total)}`);
+      if (notes.length) out.push("", "To confirm:", ...notes.map((n) => `  ${n}`));
       if (tv.anotherTv) out.push("  Also has another TV to install");
     }
     if (d.notes.trim()) out.push("", `Notes: ${d.notes.trim()}`);
@@ -239,51 +277,78 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
             />
           )}
 
-          {step === "setup" && (
-            <>
-              <Choices legend="TV size" name="size" required columns={2} value={tv.size} onChange={(v) => set("size", v)} error={errors.size}
-                options={tvSizes.map((c) => ({ id: c.id, label: c.label, meta: money(c.price) }))} />
-              <Choices legend="Wall mount" name="mount" required columns={2} value={tv.mount} onChange={(v) => set("mount", v)} error={errors.mount}
-                hint="Fixed sits flat, tilting angles down, full motion pulls out and swivels."
-                options={mounts.map((c) => ({ id: c.id, label: c.label, meta: c.price ? money(c.price) : "—" }))} />
-            </>
+          {step === "size" && (
+            <Choices legend="TV size" name="size" required columns={2} value={tv.size} onChange={(v) => set("size", v)} error={errors.size}
+              options={tvSizes.map((c) => ({
+                id: c.id,
+                label: c.label,
+                meta: money(c.price),
+                detail: helperSizeIds.includes(c.id) ? `Extra helper +${money(extraHelperPrice)}` : c.note,
+              }))} />
+          )}
+
+          {step === "mount" && (
+            <Choices legend="Wall mount" name="mount" required columns={2} value={tv.mount} onChange={(v) => set("mount", v)} error={errors.mount}
+              hint="Fixed sits flat, tilting angles down, full motion pulls out and swivels."
+              options={mounts.map((c) => ({ id: c.id, label: c.label, detail: c.price ? undefined : c.note, meta: c.price ? money(c.price) : undefined }))} />
           )}
 
           {step === "wall" && (
             <>
-              <Choices legend="Is it going above a fireplace?" name="fireplace" required columns={2}
+              <Choices legend="Is the TV going above a fireplace?" name="fireplace" required columns={2}
                 value={tv.fireplace === undefined ? undefined : tv.fireplace ? "yes" : "no"}
                 onChange={(v) => set("fireplace", v === "yes")} error={errors.fireplace}
                 options={yesNo.map((o) => ({ ...o, meta: o.id === "yes" ? `+${money(fireplaceSurcharge)}` : undefined }))} />
-              <Choices legend="Wall surface" name="surface" required columns={2} value={tv.surface} onChange={(v) => set("surface", v)} error={errors.surface}
+              <Choices legend="What surface will the TV be mounted on?" name="surface" required columns={2} value={tv.surface} onChange={(v) => set("surface", v)} error={errors.surface}
                 options={surfaces.map((c) => ({ id: c.id, label: c.label, detail: c.note, meta: c.price ? `+${money(c.price)}` : undefined }))} />
-              <Choices legend="Cable concealment" name="conceal" required columns={1} value={tv.conceal} onChange={(v) => set("conceal", v)} error={errors.conceal}
-                options={concealment.map((c) => ({ id: c.id, label: c.label, meta: c.price ? money(c.price) : undefined }))} />
+              <Choices legend="Would you like the cords hidden?" name="hideCords" required columns={2}
+                value={tv.hideCords === undefined ? undefined : tv.hideCords ? "yes" : "no"}
+                onChange={(v) => set("hideCords", v === "yes")} error={errors.hideCords}
+                options={yesNo} />
             </>
           )}
 
-          {step === "extras" && (
+          {step === "conceal" && (
+            <Choices legend="Cord concealment" name="conceal" required columns={1} value={tv.conceal} onChange={(v) => set("conceal", v)} error={errors.conceal}
+              options={concealment.map((c) => ({ id: c.id, label: c.label, detail: c.price ? undefined : c.note, meta: c.price ? `+${money(c.price)}` : undefined }))} />
+          )}
+
+          {step === "addons" && (
             <>
               <p className={styles.optional}>All optional. Skip ahead if you don&apos;t need any.</p>
               <Choices legend="Add-ons" name="addons" multiple columns={2} value={tv.addOns} onChange={(v) => set("addOns", v)}
-                options={addOns.map((c) => ({ id: c.id, label: c.label, meta: `+${money(c.price)}${c.note ? ` ${c.note}` : ""}` }))} />
-              <Choices legend="Is there an existing TV to take down first?" name="takedown" columns={2}
-                value={tv.takedown ? "yes" : "no"}
-                onChange={(v) => set("takedown", v === "yes")}
-                options={yesNo.map((o) => ({ ...o, meta: o.id === "yes" ? `+${money(takedownPrice)}` : undefined }))} />
-              <Choices legend="Devices to set up (cable box, games console…)" name="setup" columns={4}
-                value={String(tv.deviceSetup)} onChange={(v) => set("deviceSetup", Number(v))}
-                hint={`${money(deviceSetupPrice)} per device`} options={counts} />
-              <Choices legend="Devices to hide behind the TV (Apple TV…)" name="behind" columns={4}
-                value={String(tv.devicesBehind)} onChange={(v) => set("devicesBehind", Number(v))}
-                hint={`${money(devicesBehindPrice)} per device`} options={counts} />
-              <Choices legend="Extended maintenance plan" name="maintenance" columns={3}
-                value={tv.maintenance ?? "none"} onChange={(v) => set("maintenance", v)}
-                options={maintenance.map((c) => ({ id: c.id, label: c.label, meta: c.price ? `+${money(c.price)}` : undefined }))} />
-              <Choices legend="Do you have another TV to install?" name="another" columns={2}
-                value={tv.anotherTv ? "yes" : "no"} onChange={(v) => set("anotherTv", v === "yes")}
-                hint="We'll include it when we confirm your booking." options={yesNo} />
+                options={addOns.map((c) => ({ id: c.id, label: c.label, meta: extra(c) }))} />
             </>
+          )}
+
+          {step === "takedown" && (
+            <Choices legend="Existing TV takedown" name="takedown" columns={2}
+              value={tv.takedown ? "yes" : "no"}
+              onChange={(v) => set("takedown", v === "yes")}
+              options={yesNo.map((o) => ({ ...o, meta: o.id === "yes" ? `+${money(takedownPrice)}` : undefined }))} />
+          )}
+
+          {step === "devices" && (
+            <>
+              <Choices legend="Would you like to set up any devices (cable box, gaming system…)?" name="setup" columns={4}
+                value={String(tv.deviceSetup)} onChange={(v) => set("deviceSetup", Number(v))}
+                hint={`+${money(deviceSetupPrice)} per device`} options={counts} />
+              <Choices legend="Would you like to install any devices behind the TV (Apple TV, cable box…)?" name="behind" columns={4}
+                value={String(tv.devicesBehind)} onChange={(v) => set("devicesBehind", Number(v))}
+                hint={`+${money(devicesBehindPrice)} per device`} options={counts} />
+            </>
+          )}
+
+          {step === "another" && (
+            <Choices legend="Another TV" name="another" columns={2}
+              value={tv.anotherTv ? "yes" : "no"} onChange={(v) => set("anotherTv", v === "yes")}
+              hint="We'll include it when we confirm your booking." options={yesNo} />
+          )}
+
+          {step === "maintenance" && (
+            <Choices legend="Extra care maintenance plan" name="maintenance" required columns={3}
+              value={tv.maintenance} onChange={(v) => set("maintenance", v)} error={errors.maintenance}
+              options={maintenance.map((c) => ({ id: c.id, label: c.label, meta: c.price ? `+${money(c.price)}` : undefined }))} />
           )}
 
           {step === "details" && (
@@ -325,10 +390,13 @@ export function BookingFlow({ initialService }: { initialService?: string }) {
                             <span>{money(l.amount)}</span>
                           </li>
                         ))}
+                        {notes.map((n) => (
+                          <li key={n}>{n}</li>
+                        ))}
                         {tv.anotherTv && <li>Also has another TV to install</li>}
                       </ul>
                     </dd>
-                    <button type="button" className={styles.edit} onClick={() => go("setup", "back")}>Edit</button>
+                    <button type="button" className={styles.edit} onClick={() => go("size", "back")}>Edit</button>
                   </div>
                 )}
                 <div>
