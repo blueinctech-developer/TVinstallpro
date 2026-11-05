@@ -12,7 +12,7 @@ import type { ServiceEdit } from "@/lib/site-defaults";
 export type SaveResult = { ok?: string; error?: string };
 
 const listKeys = ["tvSizes", "mounts", "surfaces", "concealment", "addOns", "maintenance"] as const;
-const scalarKeys = ["fireplaceSurcharge", "takedownPrice", "deviceSetupPrice", "devicesBehindPrice"] as const;
+const scalarKeys = ["fireplaceSurcharge", "takedownPrice", "deviceSetupPrice", "devicesBehindPrice", "extraHelperPrice"] as const;
 
 const money = (v: FormDataEntryValue | null) => {
   const n = Number(String(v ?? "").replace(/[$,\s]/g, ""));

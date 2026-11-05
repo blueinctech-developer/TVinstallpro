@@ -82,7 +82,14 @@
 }
 
 .table dt {
+  min-width: 0;
   color: var(--text);
+}
+
+.rowNote {
+  display: block;
+  font-size: var(--step--1);
+  color: var(--muted);
 }
 
 .table dd {

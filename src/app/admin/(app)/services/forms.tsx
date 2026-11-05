@@ -24,6 +24,7 @@ const singles: { key: keyof PriceBook; label: string }[] = [
   { key: "takedownPrice", label: "Existing TV takedown" },
   { key: "deviceSetupPrice", label: "Device setup, per device" },
   { key: "devicesBehindPrice", label: "Device hidden behind the TV, per device" },
+  { key: "extraHelperPrice", label: "Extra helper for a 90″ – 100″ TV" },
 ];
 
 const moneyStyle = { width: 110, textAlign: "right" } as const;
