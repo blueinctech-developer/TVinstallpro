@@ -1,0 +1,225 @@
+/* Two-factor screens: logo top-left, one wide two-column panel that fits a laptop screen without scrolling. */
+
+.page {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: radial-gradient(90% 70% at 50% 0%, #fff 30%, var(--surface) 100%);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px clamp(16px, 4vw, 48px);
+}
+
+.logo {
+  display: block;
+  height: 30px;
+}
+
+.logo svg {
+  height: 100%;
+  width: auto;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.main {
+  display: grid;
+  place-items: center;
+  padding: 8px clamp(16px, 4vw, 48px) 28px;
+}
+
+.panel {
+  width: min(100%, 1040px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-float);
+  overflow: hidden;
+}
+
+.col {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: clamp(24px, 3.2vw, 40px);
+}
+
+.col + .col {
+  border-left: 1px solid var(--line);
+  background: var(--surface);
+  align-content: center;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
+
+.lead {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.steps li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+  counter-increment: step;
+}
+
+.steps li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* QR beside the manual key, so the left column stays short. */
+.scan {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 20px;
+}
+
+.qr {
+  width: 172px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  line-height: 0;
+}
+
+.qr svg {
+  width: 100%;
+  height: auto;
+}
+
+.keyLabel {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.key {
+  display: block;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  word-break: break-all;
+  color: var(--ink);
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.form :global(.btn) {
+  width: 100%;
+  justify-content: center;
+}
+
+.colTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.small {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.codes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 14px 18px;
+  list-style: none;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Small laptops: tighten vertical rhythm so the whole panel still fits. */
+@media (max-height: 760px) {
+  .top {
+    padding-block: 14px;
+  }
+  .col {
+    gap: 14px;
+    padding-block: 26px;
+  }
+  .qr {
+    width: 152px;
+  }
+}
+
+@media (max-width: 820px) {
+  .panel {
+    grid-template-columns: 1fr;
+  }
+  .col + .col {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .scan {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .who span {
+    display: none;
+  }
+}
