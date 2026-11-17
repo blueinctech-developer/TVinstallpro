@@ -1,4 +1,4 @@
-import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, randomInt, timingSafeEqual } from "node:crypto";
 
 /*
  * Time-based one-time passwords (RFC 6238), the 6-digit codes from Google Authenticator,
@@ -89,3 +89,19 @@ export function newRecoveryCodes(n = 10) {
 
 export const hashRecoveryCode = (code: string) =>
   createHash("sha256").update(code.toUpperCase().replace(/[^A-Z0-9]/g, "")).digest("hex");
+
+/* ---------- Email codes: the fallback when the app isn't to hand ---------- */
+
+/** A random 6-digit code to email. */
+export const newEmailCode = () => String(randomInt(0, 1_000_000)).padStart(DIGITS, "0");
+
+/** Stored hash of an emailed code, salted with the session it belongs to so it only works in that browser. */
+export const hashEmailCode = (code: string, sessionId: string) =>
+  createHash("sha256").update(`${sessionId}:${code.replace(/\s/g, "")}`).digest("hex");
+
+/** Constant-time comparison of two hex hashes. */
+export function sameHash(a: string, b: string) {
+  const x = Buffer.from(a, "hex");
+  const y = Buffer.from(b, "hex");
+  return x.length === y.length && x.length > 0 && timingSafeEqual(x, y);
+}
