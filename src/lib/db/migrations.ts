@@ -257,4 +257,15 @@ export const migrations: Migration[] = [
       alter table admin_sessions add column if not exists totp_pending text;
     `,
   },
+  {
+    version: 5,
+    name: "two-factor sign-in by email code",
+    // Additive only. A one-time code emailed to the admin, tied to this browser's session and
+    // stored only as a hash; it expires, and a few wrong guesses use it up.
+    sql: `
+      alter table admin_sessions add column if not exists email_code_hash text;
+      alter table admin_sessions add column if not exists email_code_expires_at timestamptz;
+      alter table admin_sessions add column if not exists email_code_attempts integer not null default 0;
+    `,
+  },
 ];

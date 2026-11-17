@@ -305,3 +305,27 @@ export function alertEmail(d: RequestEmailData) {
   const text = `${kindWord[d.kind]} ${ref(d)}\n\n${d.summary}\n\nOpen it in the admin: ${d.adminUrl}`;
   return { subject, html, text };
 }
+
+/* ---------- Two-factor sign-in code for an admin ---------- */
+
+export function signInCodeEmail(o: { code: string; name: string; minutes: number; siteUrl: string }) {
+  const first = firstName(o.name) || "there";
+  const subject = `${o.code} is your TV Install Pro sign-in code`;
+  const body = `<tr><td style="padding:32px 0 0">
+      <h1 style="margin:0 0 12px;font-family:${C.font};font-size:22px;line-height:1.3;font-weight:700;color:${C.ink}">Your sign-in code</h1>
+      ${p(`Hi ${esc(first)}, enter this code to finish signing in to the TV Install Pro dashboard.`)}
+      <div style="margin:22px 0 0;padding:18px;border-radius:12px;background:${C.surface};border:1px solid ${C.line};text-align:center;font-family:${C.font};font-size:32px;font-weight:700;letter-spacing:.3em;color:${C.ink}">${esc(o.code)}</div>
+      ${p(`It works once and expires in ${o.minutes} minutes.`, "padding-top:18px;font-size:14px;color:" + C.muted)}
+      ${p("Didn't try to sign in? Someone may know your password. Change it as soon as you can.", "padding-top:10px;font-size:14px;color:" + C.muted)}
+    </td></tr>`;
+  const html = layout({
+    preheader: `Your code is ${o.code}. It expires in ${o.minutes} minutes.`,
+    label: "Sign-in code",
+    body,
+    footer: `Sent by your website, ${esc(o.siteUrl.replace(/^https?:\/\//, ""))}.`,
+    logoUrl: `${o.siteUrl}/email-logo.png`,
+    homeUrl: o.siteUrl,
+  });
+  const text = `Your TV Install Pro sign-in code is ${o.code}\n\nIt works once and expires in ${o.minutes} minutes.\n\nDidn't try to sign in? Someone may know your password. Change it as soon as you can.`;
+  return { subject, html, text };
+}

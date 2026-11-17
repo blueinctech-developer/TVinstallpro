@@ -13,7 +13,7 @@ export default async function MfaPage() {
   if (u.mfaPassed) redirect("/admin");
   return (
     <MfaShell email={u.email}>
-      <VerifyScreen />
+      <VerifyScreen email={u.email} />
     </MfaShell>
   );
 }

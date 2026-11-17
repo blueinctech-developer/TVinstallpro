@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useActionState, useState } from "react";
 import { Icon } from "@/components/Icon";
 import styles from "../admin.module.css";
-import { confirmSetup, verifyMfa, type MfaState } from "./actions";
+import { confirmSetup, sendEmailCode, verifyMfa, type EmailCodeState, type MfaState } from "./actions";
 import m from "./mfa.module.css";
 
 function CodeField({ label, hint, error, recovery }: { label: string; hint?: string; error?: string; recovery?: boolean }) {
@@ -159,10 +159,28 @@ export function SetupScreen({ qr, secret, account }: { qr: string; secret: strin
   );
 }
 
-/** Each sign-in. */
-export function VerifyScreen() {
+type Method = "app" | "email" | "recovery";
+
+/** Each sign-in: the app code, with an emailed code or a recovery code as fallbacks. */
+export function VerifyScreen({ email }: { email: string }) {
   const [state, action, pending] = useActionState<MfaState, FormData>(verifyMfa, {});
-  const [recovery, setRecovery] = useState(false);
+  // A failed resend keeps the earlier code on screen: it still works until it expires.
+  const [sent, send, sending] = useActionState<EmailCodeState, FormData>(async (prev, form) => {
+    const next = await sendEmailCode(prev, form);
+    return next.sentTo ? next : { ...next, sentTo: prev.sentTo, sentAt: prev.sentAt };
+  }, {});
+  const [method, setMethod] = useState<Method>("app");
+  // Errors belong to the method (and emailed code) they came from, so switching clears them.
+  const current = `${method}:${method === "email" ? (sent.sentAt ?? "") : ""}`;
+  const [triedWith, setTriedWith] = useState("");
+  const error = triedWith === current && !pending ? state.error : undefined;
+  const others = (["app", "email", "recovery"] as const).filter((x) => x !== method);
+  const switchLabel: Record<Method, string> = {
+    app: "Use the app code instead",
+    email: "Email me a code instead",
+    recovery: "Use a recovery code",
+  };
+
   return (
     <div className={m.panel}>
       <section className={m.col} style={{ alignContent: "center" }}>
@@ -173,26 +191,64 @@ export function VerifyScreen() {
           One more step to open the dashboard. Open your authenticator app and enter the current code for TV Install Pro.
         </p>
         <p className={m.small}>
-          Lost your phone? Use one of the recovery codes you saved when you set this up, or ask another administrator to reset
-          your two-factor sign-in.
+          No phone to hand? We can email a one-time code to {email}. You can also use one of the recovery codes you saved when you
+          set this up, or ask another administrator to reset your two-factor sign-in.
         </p>
       </section>
       <section className={m.col}>
-        <form action={action} className={m.form} noValidate key={recovery ? "r" : "c"}>
-          <CodeField
-            label={recovery ? "Recovery code" : "6-digit code"}
-            hint={recovery ? "For example ABCDE-FGHJK. Each code works once." : undefined}
-            error={state.error}
-            recovery={recovery}
-          />
-          <ErrorMsg error={state.error} />
-          <button type="submit" className="btn" disabled={pending} aria-busy={pending || undefined}>
-            {pending ? "Checking…" : "Verify"}
-          </button>
-          <button type="button" className={`btn btn--ghost ${styles.btnSm}`} onClick={() => setRecovery((v) => !v)}>
-            {recovery ? "Use the app code instead" : "Use a recovery code"}
-          </button>
-        </form>
+        {method === "email" && !sent.sentTo ? (
+          <form action={send} className={m.form}>
+            <p className={m.lead}>
+              We&apos;ll send a 6-digit code to <strong>{email}</strong>. It works once and expires in 10 minutes.
+            </p>
+            {sent.error && (
+              <p className={styles.msg} data-kind="error" role="alert">
+                <Icon name="alert" size={16} /> {sent.error}
+              </p>
+            )}
+            <button type="submit" className="btn" disabled={sending} aria-busy={sending || undefined}>
+              {sending ? "Sending…" : "Email me a code"}
+            </button>
+          </form>
+        ) : (
+          <form action={action} className={m.form} noValidate key={current} onSubmit={() => setTriedWith(current)}>
+            {method === "email" && (
+              <p className={styles.msg} data-kind="ok" role="status">
+                <Icon name="check" size={16} /> Code sent to {sent.sentTo}. Check your inbox and spam folder.
+              </p>
+            )}
+            <input type="hidden" name="method" value={method} />
+            <CodeField
+              label={method === "recovery" ? "Recovery code" : method === "email" ? "Code from the email" : "6-digit code"}
+              hint={method === "recovery" ? "For example ABCDE-FGHJK. Each code works once." : undefined}
+              error={error}
+              recovery={method === "recovery"}
+            />
+            <ErrorMsg error={error} />
+            <button type="submit" className="btn" disabled={pending} aria-busy={pending || undefined}>
+              {pending ? "Checking…" : "Verify"}
+            </button>
+          </form>
+        )}
+        <div className={m.form} style={{ gap: 8 }}>
+          {method === "email" && sent.sentTo && (
+            <form action={send}>
+              <button type="submit" className={`btn btn--ghost ${styles.btnSm}`} disabled={sending} style={{ width: "100%" }}>
+                {sending ? "Sending…" : "Send a new code"}
+              </button>
+            </form>
+          )}
+          {method === "email" && sent.sentTo && sent.error && (
+            <p className={styles.msg} data-kind="error" role="alert">
+              <Icon name="alert" size={16} /> {sent.error}
+            </p>
+          )}
+          {others.map((x) => (
+            <button key={x} type="button" className={`btn btn--ghost ${styles.btnSm}`} onClick={() => setMethod(x)}>
+              {switchLabel[x]}
+            </button>
+          ))}
+        </div>
       </section>
     </div>
   );
